@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Alterar aqui
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import Services from "./components/Services";
 import Appointments from "./components/Appointments";
@@ -11,11 +11,10 @@ const App = () => {
     <Router>
       <Layout>
         <Routes>
-          {" "}
-          <Route path="/" element={<HomePage />} /> {}
+          <Route path="/" element={<HomePage />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/appointments" element={<Appointments />} />{" "}
-          <Route path="*" element={<NotFound />} /> {}
+          <Route path="/appointments" element={<Appointments />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
     </Router>

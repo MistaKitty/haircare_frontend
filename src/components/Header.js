@@ -1,23 +1,30 @@
 import React from "react";
-import "./Header.css";
 
 const Header = () => {
   return (
-    <header className="Header">
+    <header className="Header bg-black text-white">
       <h1>Welcome to Our Hair Salon</h1>
       <nav>
-        <ul>
-          <li>
-            <a href="/">Home</a>
+        <ul className="nav justify-content-center">
+          <li className="nav-item">
+            <a className="nav-link text-white" href="/">
+              Home
+            </a>
           </li>
-          <li>
-            <a href="/services">Services</a>
+          <li className="nav-item">
+            <a className="nav-link text-white" href="/services">
+              Services
+            </a>
           </li>
-          <li>
-            <a href="/about">About Us</a>
+          <li className="nav-item">
+            <a className="nav-link text-white" href="/about">
+              About Us
+            </a>
           </li>
-          <li>
-            <a href="/contact">Contact</a>
+          <li className="nav-item">
+            <a className="nav-link text-white" href="/contact">
+              Contact
+            </a>
           </li>
         </ul>
       </nav>

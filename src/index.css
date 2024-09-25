@@ -1,8 +1,36 @@
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #ffffff;
-  color: #333;
+html {
+  height: 100%;
+  background-color: #000;
+  color: #fff;
 }
 
-/* Add more global styles as needed */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.Header {
+  padding: 20px;
+  text-align: center;
+}
+
+.Footer {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  width: 100%;
+  margin-top: auto;
+}
+
+main {
+  flex: 1;
+  padding: 5px;
+  background-color: #000;
+  border-top: 10px solid #fff;
+  border-bottom: 10px solid #fff;
+  box-sizing: border-box;
+}

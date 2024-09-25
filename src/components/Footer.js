@@ -1,10 +1,11 @@
 import React from "react";
-import "./Footer.css";
 
 const Footer = () => {
   return (
-    <footer className="Footer">
-      <p>&copy; {new Date().getFullYear()} Hair Salon. All rights reserved.</p>
+    <footer className="Footer bg-black">
+      <p className="text-white">
+        &copy; {new Date().getFullYear()} Hair Salon. All rights reserved.
+      </p>
     </footer>
   );
 };
