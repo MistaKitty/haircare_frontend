@@ -14,16 +14,20 @@ const Login = () => {
     e.preventDefault();
 
     const apiUrl = isRemote
-      ? import.meta.env.VITE_APP_API_URL_REMOTE
-      : import.meta.env.VITE_APP_API_URL_LOCAL;
+      ? import.meta.env.VITE_API_URL_REMOTE
+      : import.meta.env.VITE_BACKEND_URL;
 
     try {
       const response = await axios.post(`${apiUrl}/api/auth/login`, {
         email,
         password,
       });
-      localStorage.setItem("token", response.data.token);
-      navigate("/");
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/");
+      } else {
+        setError("Login failed: No token received");
+      }
     } catch (err) {
       setError("Invalid credentials");
     }
