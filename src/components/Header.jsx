@@ -1,7 +1,11 @@
 import React from "react";
+import { useLocation, Link } from "react-router-dom";
 import logo from "../assets/logo.ico";
+import "./Header.css";
 
 const Header = () => {
+  const location = useLocation();
+
   return (
     <header className="Header bg-black text-white">
       <nav className="navbar navbar-expand-lg navbar-dark bg-black">
@@ -13,8 +17,8 @@ const Header = () => {
               height="40"
               className="d-inline-block align-text-top"
             />
+            <div className="mt-1">Hair Care</div>
           </a>
-
           <button
             className="navbar-toggler"
             type="button"
@@ -30,34 +34,57 @@ const Header = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a className="nav-link text-white" href="/">
+                <Link
+                  className={`nav-link text-white ${
+                    location.pathname === "/" ? "active" : ""
+                  }`}
+                  to="/"
+                >
                   Home
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-white" href="/services">
+                <Link
+                  className={`nav-link text-white ${
+                    location.pathname === "/services" ? "active" : ""
+                  }`}
+                  to="/services"
+                >
                   Services
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-white" href="/about">
+                <Link
+                  className={`nav-link text-white ${
+                    location.pathname === "/about" ? "active" : ""
+                  }`}
+                  to="/about"
+                >
                   About Us
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-white" href="/contact">
+                <Link
+                  className={`nav-link text-white ${
+                    location.pathname === "/contact" ? "active" : ""
+                  }`}
+                  to="/contact"
+                >
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
 
-            {/* Botões de perfil e carrinho à direita */}
             <div className="d-flex ms-auto">
-              <button className="btn btn-outline-light me-2" type="button">
-                <i className="bi bi-person"></i> {/* Icone do perfil */}
-              </button>
+              <Link
+                to="/login"
+                className="btn btn-outline-light me-2"
+                type="button"
+              >
+                <i className="bi bi-person"></i>
+              </Link>
               <button className="btn btn-outline-light" type="button">
-                <i className="bi bi-cart"></i> {/* Icone do carrinho */}
+                <i className="bi bi-cart"></i>
               </button>
             </div>
           </div>

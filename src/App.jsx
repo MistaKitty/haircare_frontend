@@ -5,6 +5,7 @@ import Services from "./components/Services";
 import Appointments from "./components/Appointments";
 import NotFound from "./components/NotFound";
 import Layout from "./components/Layout";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/appointments" element={<Appointments />} />
+          <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

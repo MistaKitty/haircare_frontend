@@ -1,0 +1,26 @@
+.nav-link {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: #f0f0f0;
+  color: black !important;
+}
+
+.nav-link:active {
+  background-color: #202020;
+  color: white;
+}
+
+.nav-link.active {
+  background-color: white !important;
+  color: black !important;
+}
+
+.navbar-brand div {
+  font-family: "Dancing Script", cursive;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
