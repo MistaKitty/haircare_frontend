@@ -32,14 +32,6 @@ const Register = () => {
       : import.meta.env.VITE_BACKEND_URL + "/api/user";
 
     try {
-      console.log("Request Body:", {
-        name,
-        email,
-        password,
-        phonePrefix: phonePrefix.replace("+", ""),
-        phoneNumber,
-      });
-
       const response = await axios.post(apiUrl, {
         name,
         email,
@@ -74,8 +66,9 @@ const Register = () => {
           showIcon
           style={{
             marginBottom: 16,
-            fontSize: "1.5rem", // Aumentar o tamanho da fonte
-            display: "inline-block", // Centraliza melhor
+            fontSize: "1.5rem",
+            display: "inline-block",
+            width: "100%",
           }}
         />
       ) : (
