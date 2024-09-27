@@ -1,18 +1,26 @@
 .container {
   max-width: 400px;
-  margin-top: 50px;
-}
-
-.custom-input {
-  width: 100%;
-  border-radius: 4px;
-}
-
-.custom-button {
-  width: 100%;
-  border-radius: 4px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #282c34;
+  border-radius: 8px;
 }
 
 .login-form {
   margin-top: 20px;
+}
+
+.custom-button {
+  border-radius: 4px;
+}
+
+.ant-btn {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.ant-input,
+.ant-input-password {
+  width: 100%;
+  border-radius: 4px;
 }

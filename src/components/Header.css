@@ -1,3 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap");
+
+.Header {
+  background-color: #000;
+}
+
 .nav-link {
   transition: background-color 0.3s, color 0.3s;
 }

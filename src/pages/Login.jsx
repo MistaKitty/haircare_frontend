@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Input, Button, Spin } from "antd";
+import { Input, Button, Spin, Typography, Alert, Space } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Login.css";
+
+const { Title } = Typography;
 
 const isRemote = import.meta.env.VITE_APP_USE_REMOTE === "true";
 
@@ -20,14 +22,15 @@ const Login = () => {
     setError("");
 
     const apiUrl = isRemote
-      ? import.meta.env.VITE_API_URL_REMOTE
-      : import.meta.env.VITE_BACKEND_URL;
+      ? import.meta.env.VITE_API_URL_REMOTE + "/api/auth/login"
+      : import.meta.env.VITE_BACKEND_URL + "/api/auth/login";
 
     try {
-      const response = await axios.post(`${apiUrl}/auth/login`, {
+      const response = await axios.post(apiUrl, {
         email,
         password,
       });
+
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         navigate("/");
@@ -45,52 +48,65 @@ const Login = () => {
     }
   };
 
+  const handleRegister = () => {
+    navigate("/register");
+  };
+
   return (
     <div className="container">
-      <h2>Login</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
+      <Title level={2} style={{ textAlign: "center", color: "white" }}>
+        Login
+      </Title>
+      {error && (
+        <Alert
+          message={error}
+          type="error"
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <form onSubmit={handleSubmit} className="login-form">
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
+        <Space direction="vertical" style={{ width: "100%" }}>
           <Input
             type="email"
-            id="email"
+            placeholder="Email"
             size="large"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="custom-input"
           />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
           <Input.Password
-            id="password"
+            placeholder="Password"
             size="large"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="custom-input"
           />
-        </div>
-        <div className="text-center">
-          {loading ? (
-            <Spin size="large" />
-          ) : (
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              className="custom-button"
-            >
-              Login
-            </Button>
-          )}
-        </div>
+          <div className="text-center">
+            {loading ? (
+              <Spin size="large" />
+            ) : (
+              <Space style={{ width: "100%", justifyContent: "space-between" }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                  style={{ flex: 1, marginRight: "10px" }}
+                >
+                  Login
+                </Button>
+                <Button
+                  type="default"
+                  size="large"
+                  onClick={handleRegister}
+                  style={{ flex: 1 }}
+                >
+                  Registar
+                </Button>
+              </Space>
+            )}
+          </div>
+        </Space>
       </form>
     </div>
   );

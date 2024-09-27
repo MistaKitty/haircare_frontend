@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Button } from "antd";
 import {
@@ -12,10 +12,15 @@ import "./Header.css";
 const Header = () => {
   const location = useLocation();
   const isLoggedIn = localStorage.getItem("token") !== null;
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/";
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   return (
@@ -34,17 +39,19 @@ const Header = () => {
           <button
             className="navbar-toggler"
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
+            onClick={toggleMenu}
             aria-controls="navbarNav"
-            aria-expanded="false"
+            aria-expanded={menuOpen}
             aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
+          <div
+            className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}
+            id="navbarNav"
+          >
+            <ul className="navbar-nav mx-auto">
               <li className="nav-item">
                 <Link
                   className={`nav-link text-white ${
@@ -87,9 +94,27 @@ const Header = () => {
               </li>
             </ul>
 
-            <div className="d-flex ms-auto">
-              {!isLoggedIn ? (
-                <Link to="/login" className="me-2">
+            <div className="d-flex align-items-center">
+              {isLoggedIn ? (
+                <>
+                  <Button
+                    type="default"
+                    icon={<ShoppingCartOutlined />}
+                    className="btn-outline-light me-2"
+                  >
+                    Cart
+                  </Button>
+                  <Button
+                    type="default"
+                    icon={<LogoutOutlined />}
+                    onClick={handleLogout}
+                    className="btn-outline-light"
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Link to="/login" className="w-100 text-center">
                   <Button
                     type="default"
                     icon={<LoginOutlined />}
@@ -98,24 +123,6 @@ const Header = () => {
                     Login
                   </Button>
                 </Link>
-              ) : (
-                <>
-                  <Button
-                    type="default"
-                    icon={<LogoutOutlined />}
-                    onClick={handleLogout}
-                    className="btn-outline-light me-2"
-                  >
-                    Logout
-                  </Button>
-                  <Button
-                    type="default"
-                    icon={<ShoppingCartOutlined />}
-                    className="btn-outline-light"
-                  >
-                    Cart
-                  </Button>
-                </>
               )}
             </div>
           </div>
