@@ -54,9 +54,24 @@ const Login = () => {
 
   return (
     <div className="container">
-      <Title level={2} style={{ textAlign: "center", color: "white" }}>
-        Login
-      </Title>
+      {!loading && (
+        <Title level={2} style={{ textAlign: "center", color: "white" }}>
+          Login
+        </Title>
+      )}
+      {loading && (
+        <div style={{ textAlign: "center" }}>
+          <Spin
+            size="large"
+            style={{ display: "block", margin: "20px auto" }}
+          />
+          <Typography.Text
+            style={{ display: "block", fontStyle: "italic", color: "white" }}
+          >
+            Login in progress... Please wait...
+          </Typography.Text>
+        </div>
+      )}
       {error && (
         <Alert
           message={error}
@@ -66,26 +81,24 @@ const Login = () => {
         />
       )}
       <form onSubmit={handleSubmit} className="login-form">
-        <Space direction="vertical" style={{ width: "100%" }}>
-          <Input
-            type="email"
-            placeholder="Email"
-            size="large"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Input.Password
-            placeholder="Password"
-            size="large"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <div className="text-center">
-            {loading ? (
-              <Spin size="large" />
-            ) : (
+        {!loading && (
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Input
+              type="email"
+              placeholder="Email"
+              size="large"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input.Password
+              placeholder="Password"
+              size="large"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div className="text-center">
               <Space style={{ width: "100%", justifyContent: "space-between" }}>
                 <Button
                   type="primary"
@@ -104,9 +117,9 @@ const Login = () => {
                   Registar
                 </Button>
               </Space>
-            )}
-          </div>
-        </Space>
+            </div>
+          </Space>
+        )}
       </form>
     </div>
   );
