@@ -1,0 +1,18 @@
+.container {
+  max-width: 400px;
+  margin-top: 50px;
+}
+
+.custom-input {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.custom-button {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.login-form {
+  margin-top: 20px;
+}

@@ -1,10 +1,22 @@
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
+import { Button } from "antd";
+import {
+  LoginOutlined,
+  ShoppingCartOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import logo from "../assets/logo.ico";
 import "./Header.css";
 
 const Header = () => {
   const location = useLocation();
+  const isLoggedIn = localStorage.getItem("token") !== null;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
 
   return (
     <header className="Header bg-black text-white">
@@ -76,16 +88,35 @@ const Header = () => {
             </ul>
 
             <div className="d-flex ms-auto">
-              <Link
-                to="/login"
-                className="btn btn-outline-light me-2"
-                type="button"
-              >
-                <i className="bi bi-person"></i>
-              </Link>
-              <button className="btn btn-outline-light" type="button">
-                <i className="bi bi-cart"></i>
-              </button>
+              {!isLoggedIn ? (
+                <Link to="/login" className="me-2">
+                  <Button
+                    type="default"
+                    icon={<LoginOutlined />}
+                    className="btn-outline-light"
+                  >
+                    Login
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Button
+                    type="default"
+                    icon={<LogoutOutlined />}
+                    onClick={handleLogout}
+                    className="btn-outline-light me-2"
+                  >
+                    Logout
+                  </Button>
+                  <Button
+                    type="default"
+                    icon={<ShoppingCartOutlined />}
+                    className="btn-outline-light"
+                  >
+                    Cart
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
