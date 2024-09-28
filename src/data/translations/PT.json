@@ -12,5 +12,14 @@
   "loggingIn": "A iniciar sessão... Por favor aguarde...",
   "noTokenReceived": "Nenhum token recebido.",
   "loginFailed": "Falha ao iniciar sessão.",
-  "unexpectedError": "Erro inesperado."
+  "unexpectedError": "Erro inesperado.",
+  "aboutDescription": "No nosso salão, oferecemos uma experiência única de beleza e bem-estar, com profissionais altamente qualificados e dedicados a realçar a sua beleza natural.",
+  "ourMission": "Nossa Missão",
+  "missionDescription": "Proporcionar serviços de alta qualidade que superem as expectativas dos nossos clientes e promovam a sua confiança e autoestima.",
+  "ourValues": "Nossos Valores",
+  "valueQuality": "Qualidade",
+  "valueCustomerCare": "Atendimento ao Cliente",
+  "valueInnovation": "Inovação",
+  "servicesOffered": "Serviços Oferecidos",
+  "servicesDescription": "Oferecemos uma ampla gama de serviços, incluindo cortes de cabelo, coloração, tratamentos capilares e muito mais."
 }

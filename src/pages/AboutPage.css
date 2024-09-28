@@ -1,0 +1,28 @@
+.about-container {
+  background-color: #000;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.white-text {
+  color: #fff;
+}
+
+.large-text {
+  font-size: 1.3em;
+  line-height: 1.5;
+}
+
+.white-line {
+  border-top: 1px solid #fff;
+  width: 60%;
+  margin: 20px auto;
+}
+
+.list-unstyled {
+  list-style: none;
+}
