@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CountryFlag from "react-country-flag";
 import countries from "../data/countries.json";
-import "./Register.css"; // Importa o CSS
+import "./Register.css";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -43,7 +43,7 @@ const Register = () => {
 
       if (response.status === 201) {
         setSuccess(true);
-        // setTimeout(() => navigate("/login"), 2000);
+        setTimeout(() => navigate("/login"), 2000);
       } else {
         setError(response.data.message || "Registration failed");
       }

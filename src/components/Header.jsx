@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Select } from "antd";
 import {
   LoginOutlined,
   ShoppingCartOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import logo from "../assets/logo.ico";
+import translations from "../data/translations.json";
+import countries from "../data/countries.json";
+import CountryFlag from "react-country-flag";
 import "./Header.css";
+
+const { Option } = Select;
 
 const Header = () => {
   const location = useLocation();
   const isLoggedIn = localStorage.getItem("token") !== null;
   const [menuOpen, setMenuOpen] = useState(false);
+  const [language, setLanguage] = useState(
+    localStorage.getItem("language") || "PT"
+  );
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -23,19 +31,35 @@ const Header = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const handleLanguageChange = (value) => {
+    setLanguage(value);
+    localStorage.setItem("language", value);
+  };
+
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem("language");
+    if (storedLanguage) {
+      setLanguage(storedLanguage);
+    }
+  }, []);
+
   return (
-    <header className="Header bg-black text-white">
-      <nav className="navbar navbar-expand-lg navbar-dark bg-black">
+    <header className="Header">
+      <nav className="navbar navbar-expand-lg navbar-dark">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <Link
+            className="navbar-brand d-flex align-items-center"
+            to="/"
+            style={{ width: "150px" }}
+          >
             <img
               src={logo}
               alt="Logo"
               height="40"
               className="d-inline-block align-text-top"
             />
-            <div className="mt-1">Hair Care</div>
-          </a>
+            <div className="ms-2">Hair Care</div>
+          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -47,83 +71,112 @@ const Header = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div
-            className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}
-            id="navbarNav"
-          >
+          <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
             <ul className="navbar-nav mx-auto">
               <li className="nav-item">
                 <Link
-                  className={`nav-link text-white ${
+                  className={`nav-link ${
                     location.pathname === "/" ? "active" : ""
                   }`}
                   to="/"
                 >
-                  Home
+                  {translations[language].home}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className={`nav-link text-white ${
+                  className={`nav-link ${
                     location.pathname === "/services" ? "active" : ""
                   }`}
                   to="/services"
                 >
-                  Services
+                  {translations[language].services}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className={`nav-link text-white ${
+                  className={`nav-link ${
                     location.pathname === "/about" ? "active" : ""
                   }`}
                   to="/about"
                 >
-                  About Us
+                  {translations[language].about}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className={`nav-link text-white ${
+                  className={`nav-link ${
                     location.pathname === "/contact" ? "active" : ""
                   }`}
                   to="/contact"
                 >
-                  Contact
+                  {translations[language].contact}
                 </Link>
               </li>
             </ul>
 
-            <div className="d-flex align-items-center">
-              {isLoggedIn ? (
-                <>
-                  <Button
-                    type="default"
-                    icon={<ShoppingCartOutlined />}
-                    className="btn-outline-light me-2"
-                  >
-                    Cart
-                  </Button>
-                  <Button
-                    type="default"
-                    icon={<LogoutOutlined />}
-                    onClick={handleLogout}
-                    className="btn-outline-light"
-                  >
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <Link to="/login" className="w-100 text-center">
-                  <Button
-                    type="default"
-                    icon={<LoginOutlined />}
-                    className="btn-outline-light"
-                  >
-                    Login
-                  </Button>
-                </Link>
-              )}
+            <div className="d-flex flex-column align-items-end justify-content-center">
+              <div className="mb-2">
+                <Select
+                  placeholder="Select Language"
+                  value={language}
+                  onChange={handleLanguageChange}
+                  className="language-select"
+                  style={{ width: 120 }}
+                >
+                  {countries.map((country) => (
+                    <Option key={country.code} value={country.code}>
+                      <span className="country-flag">
+                        <CountryFlag
+                          countryCode={country.code}
+                          svg
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            marginRight: "8px",
+                          }}
+                        />
+                        {country.code.toUpperCase()}
+                      </span>
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+
+              <div className="d-flex">
+                {isLoggedIn ? (
+                  <>
+                    <Button
+                      type="default"
+                      icon={<ShoppingCartOutlined />}
+                      className="btn-outline-light me-2"
+                      style={{ minWidth: "100px" }}
+                    >
+                      {translations[language].cart}
+                    </Button>
+                    <Button
+                      type="default"
+                      icon={<LogoutOutlined />}
+                      onClick={handleLogout}
+                      className="btn-outline-light"
+                      style={{ minWidth: "100px" }}
+                    >
+                      {translations[language].logout}
+                    </Button>
+                  </>
+                ) : (
+                  <Link to="/login" className="w-100 text-center">
+                    <Button
+                      type="default"
+                      icon={<LoginOutlined />}
+                      className="btn-outline-light"
+                      style={{ minWidth: "100px" }}
+                    >
+                      {translations[language].login}
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>

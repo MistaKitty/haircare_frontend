@@ -1,0 +1,34 @@
+{
+  "PT": {
+    "home": "Início",
+    "services": "Serviços",
+    "about": "Sobre Nós",
+    "contact": "Contato",
+    "cart": "Carrinho",
+    "logout": "Sair",
+    "login": "Entrar",
+    "register": "Registar",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Palavra-passe",
+    "loggingIn": "A iniciar sessão... Por favor aguarde...",
+    "noTokenReceived": "Nenhum token recebido.",
+    "loginFailed": "Falha ao iniciar sessão.",
+    "unexpectedError": "Erro inesperado."
+  },
+  "US": {
+    "home": "Home",
+    "services": "Services",
+    "about": "About Us",
+    "contact": "Contact",
+    "cart": "Cart",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "loggingIn": "Logging in... Please wait...",
+    "noTokenReceived": "No token received.",
+    "loginFailed": "Login failed.",
+    "unexpectedError": "Unexpected error."
+  }
+}

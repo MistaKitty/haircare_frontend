@@ -2,25 +2,7 @@
 
 .Header {
   background-color: #000;
-}
-
-.nav-link {
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.nav-link:hover {
-  background-color: #f0f0f0;
-  color: black !important;
-}
-
-.nav-link:active {
-  background-color: #202020;
-  color: white;
-}
-
-.nav-link.active {
-  background-color: white !important;
-  color: black !important;
+  padding: 10px 0;
 }
 
 .navbar-brand div {

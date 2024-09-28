@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input, Button, Spin, Typography, Alert, Space } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Login.css";
+import translations from "../data/translations.json";
 
 const { Title } = Typography;
 
@@ -14,7 +15,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const navigate = useNavigate();
+  const language = "PT";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,13 +38,15 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         navigate("/");
       } else {
-        setError("Login failed: No token received");
+        setError(translations[language].noTokenReceived);
       }
     } catch (err) {
       if (err.response && err.response.data) {
-        setError(err.response.data.message || "Login failed");
+        setError(
+          err.response.data.message || translations[language].loginFailed
+        );
       } else {
-        setError("Login failed: Unexpected error");
+        setError(translations[language].unexpectedError);
       }
     } finally {
       setLoading(false);
@@ -56,14 +61,14 @@ const Login = () => {
     <div className="container">
       {!loading && (
         <Title level={2} className="text-center text-white">
-          Login
+          {translations[language].login}
         </Title>
       )}
       {loading && (
         <div className="text-center">
           <Spin size="large" className="my-4" />
           <Typography.Text className="d-block italic text-white">
-            Logging in... Please wait...
+            {translations[language].loggingIn}
           </Typography.Text>
         </div>
       )}
@@ -75,14 +80,14 @@ const Login = () => {
           <Space direction="vertical" style={{ width: "100%" }}>
             <Input
               type="email"
-              placeholder="Email"
+              placeholder={translations[language].emailPlaceholder}
               size="large"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <Input.Password
-              placeholder="Password"
+              placeholder={translations[language].passwordPlaceholder}
               size="large"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -96,7 +101,7 @@ const Login = () => {
                   size="large"
                   className="flex-1 me-2"
                 >
-                  Login
+                  {translations[language].login}
                 </Button>
                 <Button
                   type="default"
@@ -104,7 +109,7 @@ const Login = () => {
                   onClick={handleRegister}
                   className="flex-1"
                 >
-                  Registar
+                  {translations[language].register}
                 </Button>
               </Space>
             </div>
