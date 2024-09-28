@@ -1,0 +1,62 @@
+.container {
+  text-align: center;
+}
+
+.success-alert {
+  font-size: 1.5rem;
+  display: inline-block;
+  width: 100%;
+}
+
+.loading-container {
+  text-align: center;
+}
+
+.loading-spinner {
+  margin-top: 20px;
+}
+
+.loading-text {
+  display: block;
+  font-style: italic;
+  color: white;
+  margin-top: 10px;
+}
+
+.error-alert {
+  margin-bottom: 16px;
+}
+
+.form-space {
+  width: 100%;
+}
+
+.phone-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.phone-select {
+  width: 50%;
+}
+
+.phone-input {
+  margin-left: 10px;
+  width: 90%;
+}
+
+.country-flag {
+  display: flex;
+  align-items: center;
+}
+
+.country-flag-icon {
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 8px;
+}
+
+.white-title {
+  color: white;
+}

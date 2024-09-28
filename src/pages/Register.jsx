@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CountryFlag from "react-country-flag";
 import countries from "../data/countries.json";
+import "./Register.css"; // Importa o CSS
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -42,7 +43,7 @@ const Register = () => {
 
       if (response.status === 201) {
         setSuccess(true);
-        setTimeout(() => navigate("/login"), 2000);
+        // setTimeout(() => navigate("/login"), 2000);
       } else {
         setError(response.data.message || "Registration failed");
       }
@@ -58,37 +59,25 @@ const Register = () => {
   };
 
   return (
-    <div className="container" style={{ textAlign: "center" }}>
+    <div className="container">
       {success ? (
         <Alert
           message="Registration successful! Redirecting to login..."
           type="success"
           showIcon
-          style={{
-            marginBottom: 16,
-            fontSize: "1.5rem",
-            display: "inline-block",
-            width: "100%",
-          }}
+          className="success-alert"
         />
       ) : (
         <>
           {!loading && (
-            <Title level={2} style={{ color: "white" }}>
+            <Title level={2} className="title text-white">
               Register
             </Title>
           )}
           {loading ? (
-            <div style={{ textAlign: "center" }}>
-              <Spin size="large" style={{ marginTop: "20px" }} />
-              <Typography.Text
-                style={{
-                  display: "block",
-                  fontStyle: "italic",
-                  color: "white",
-                  marginTop: "10px",
-                }}
-              >
+            <div className="loading-container">
+              <Spin size="large" className="loading-spinner" />
+              <Typography.Text className="loading-text">
                 Registering... Please wait...
               </Typography.Text>
             </div>
@@ -99,11 +88,11 @@ const Register = () => {
                   message={error}
                   type="error"
                   showIcon
-                  style={{ marginBottom: 16 }}
+                  className="error-alert"
                 />
               )}
               <form onSubmit={handleSubmit}>
-                <Space direction="vertical" style={{ width: "100%" }}>
+                <Space direction="vertical" className="form-space">
                   <Input
                     placeholder="Name"
                     value={name}
@@ -123,33 +112,21 @@ const Register = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      width: "100%",
-                    }}
-                  >
+                  <div className="phone-container">
                     <Select
                       placeholder="Prefix"
                       value={phonePrefix}
                       onChange={setPhonePrefix}
                       required
-                      style={{ width: "50%" }}
+                      className="phone-select"
                     >
                       {countries.map((country) => (
                         <Option key={country.code} value={country.prefix}>
-                          <span
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
+                          <span className="country-flag">
                             <CountryFlag
                               countryCode={country.code}
                               svg
-                              style={{
-                                width: "1.5em",
-                                height: "1.5em",
-                                marginRight: "8px",
-                              }}
+                              className="country-flag-icon"
                             />
                             {country.code.toUpperCase()} (+{country.prefix}){" "}
                           </span>
@@ -161,7 +138,7 @@ const Register = () => {
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       required
-                      style={{ marginLeft: "10px", width: "90%" }}
+                      className="phone-input"
                     />
                   </div>
                   <Button type="primary" htmlType="submit" loading={loading}>

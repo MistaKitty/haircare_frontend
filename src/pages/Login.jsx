@@ -55,30 +55,20 @@ const Login = () => {
   return (
     <div className="container">
       {!loading && (
-        <Title level={2} style={{ textAlign: "center", color: "white" }}>
+        <Title level={2} className="text-center text-white">
           Login
         </Title>
       )}
       {loading && (
-        <div style={{ textAlign: "center" }}>
-          <Spin
-            size="large"
-            style={{ display: "block", margin: "20px auto" }}
-          />
-          <Typography.Text
-            style={{ display: "block", fontStyle: "italic", color: "white" }}
-          >
-            Login in progress... Please wait...
+        <div className="text-center">
+          <Spin size="large" className="my-4" />
+          <Typography.Text className="d-block italic text-white">
+            Logging in... Please wait...
           </Typography.Text>
         </div>
       )}
       {error && (
-        <Alert
-          message={error}
-          type="error"
-          showIcon
-          style={{ marginBottom: 16 }}
-        />
+        <Alert message={error} type="error" showIcon className="mb-3" />
       )}
       <form onSubmit={handleSubmit} className="login-form">
         {!loading && (
@@ -104,7 +94,7 @@ const Login = () => {
                   type="primary"
                   htmlType="submit"
                   size="large"
-                  style={{ flex: 1, marginRight: "10px" }}
+                  className="flex-1 me-2"
                 >
                   Login
                 </Button>
@@ -112,7 +102,7 @@ const Login = () => {
                   type="default"
                   size="large"
                   onClick={handleRegister}
-                  style={{ flex: 1 }}
+                  className="flex-1"
                 >
                   Registar
                 </Button>
