@@ -16,13 +16,14 @@ const { Option } = Select;
 
 const Header = () => {
   const location = useLocation();
-  const isLoggedIn = localStorage.getItem("token") !== null;
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
   const [menuOpen, setMenuOpen] = useState(false);
   const [language, setLanguage] = useState(
     localStorage.getItem("language") || "PT"
   );
   const [translations, setTranslations] = useState({});
-  const [countries, setCountries] = useState({});
+  const [countries, setCountries] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     const loadTranslations = async () => {
@@ -41,17 +42,7 @@ const Header = () => {
   }, [language]);
 
   useEffect(() => {
-    const loadCountries = async () => {
-      try {
-        // Aceder diretamente aos dados de países importados
-        setCountries(countriesData);
-      } catch (err) {
-        console.error("Error loading countries:", err);
-        setCountries({});
-      }
-    };
-
-    loadCountries();
+    setCountries(countriesData);
   }, []);
 
   const handleLogout = () => {
@@ -60,16 +51,26 @@ const Header = () => {
   };
 
   const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
+    setMenuOpen((prev) => !prev);
   };
 
   const handleLanguageChange = (value) => {
-    Cookies.remove("language");
+    Cookies.set("language", value, { expires: 365 });
     setLanguage(value);
     localStorage.setItem("language", value);
-    Cookies.set("language", value, { expires: 365 });
     window.location.reload();
   };
+
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <header className="Header">
@@ -119,35 +120,43 @@ const Header = () => {
               ))}
             </ul>
 
-            <div className="d-flex flex-column align-items-end justify-content-center">
-              <div className="mb-2">
-                <Select
-                  placeholder="Select Language"
-                  value={language}
-                  onChange={handleLanguageChange}
-                  className="language-select"
-                  style={{ width: 120 }}
-                >
-                  {Object.values(countries).map(({ code }) => (
-                    <Option key={code} value={code}>
-                      <span className="country-flag">
-                        <CountryFlag
-                          countryCode={code}
-                          svg
-                          style={{
-                            width: "20px",
-                            height: "20px",
-                            marginRight: "8px",
-                          }}
-                        />
-                        {code}
-                      </span>
-                    </Option>
-                  ))}
-                </Select>
-              </div>
+            <div
+              className={`d-flex ${
+                isMobile
+                  ? "flex-column align-items-center"
+                  : "flex-column align-items-center"
+              }`}
+            >
+              <Select
+                placeholder="Select Language"
+                value={language}
+                onChange={handleLanguageChange}
+                className="language-select mb-3"
+                style={{ width: 100 }}
+              >
+                {countries.map(({ code }) => (
+                  <Option key={code} value={code}>
+                    <span className="country-flag">
+                      <CountryFlag
+                        countryCode={code}
+                        svg
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          marginRight: "8px",
+                        }}
+                      />
+                      {code}
+                    </span>
+                  </Option>
+                ))}
+              </Select>
 
-              <div className="d-flex">
+              <div
+                className={`d-flex ${
+                  isMobile ? "justify-content-around" : "align-items-center"
+                }`}
+              >
                 {isLoggedIn ? (
                   <>
                     <Button
@@ -177,6 +186,17 @@ const Header = () => {
                       style={{ minWidth: "100px" }}
                     >
                       {translations.login || "Login"}
+                    </Button>
+                  </Link>
+                )}
+                {!isLoggedIn && menuOpen && isMobile && (
+                  <Link to="/register" className="w-100 text-center">
+                    <Button
+                      type="default"
+                      className="btn-outline-light ms-2"
+                      style={{ minWidth: "100px" }}
+                    >
+                      {translations.register || "Register"}
                     </Button>
                   </Link>
                 )}
