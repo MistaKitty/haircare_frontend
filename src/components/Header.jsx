@@ -7,11 +7,10 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import logo from "../assets/logo.ico";
-import translations from "../data/translations.json";
-import countries from "../data/countries.json";
+import Cookies from "js-cookie";
 import CountryFlag from "react-country-flag";
 import "./Header.css";
-import useLanguage from "../hooks/useLanguage";
+import countriesData from "../data/countries.json";
 
 const { Option } = Select;
 
@@ -22,7 +21,38 @@ const Header = () => {
   const [language, setLanguage] = useState(
     localStorage.getItem("language") || "PT"
   );
-  // const { language, changeLanguage } = useLanguage();
+  const [translations, setTranslations] = useState({});
+  const [countries, setCountries] = useState({});
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      try {
+        const translationModule = await import(
+          `../data/translations/${language}.json`
+        );
+        setTranslations(translationModule);
+      } catch (err) {
+        console.error("Error loading translations:", err);
+        setTranslations({});
+      }
+    };
+
+    loadTranslations();
+  }, [language]);
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      try {
+        // Aceder diretamente aos dados de países importados
+        setCountries(countriesData);
+      } catch (err) {
+        console.error("Error loading countries:", err);
+        setCountries({});
+      }
+    };
+
+    loadCountries();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -34,16 +64,12 @@ const Header = () => {
   };
 
   const handleLanguageChange = (value) => {
+    Cookies.remove("language");
     setLanguage(value);
     localStorage.setItem("language", value);
+    Cookies.set("language", value, { expires: 365 });
+    window.location.reload();
   };
-
-  useEffect(() => {
-    const storedLanguage = localStorage.getItem("language");
-    if (storedLanguage) {
-      setLanguage(storedLanguage);
-    }
-  }, []);
 
   return (
     <header className="Header">
@@ -75,46 +101,22 @@ const Header = () => {
 
           <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
             <ul className="navbar-nav mx-auto">
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${
-                    location.pathname === "/" ? "active" : ""
-                  }`}
-                  to="/"
-                >
-                  {translations[language].home}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${
-                    location.pathname === "/services" ? "active" : ""
-                  }`}
-                  to="/services"
-                >
-                  {translations[language].services}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${
-                    location.pathname === "/about" ? "active" : ""
-                  }`}
-                  to="/about"
-                >
-                  {translations[language].about}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${
-                    location.pathname === "/contact" ? "active" : ""
-                  }`}
-                  to="/contact"
-                >
-                  {translations[language].contact}
-                </Link>
-              </li>
+              {["/", "/services", "/about", "/contact"].map((path, index) => (
+                <li className="nav-item" key={index}>
+                  <Link
+                    className={`nav-link ${
+                      location.pathname === path ? "active" : ""
+                    }`}
+                    to={path}
+                  >
+                    {path === "/"
+                      ? translations.home || "Home"
+                      : translations[path.replace("/", "")] ||
+                        path.replace("/", "").charAt(0).toUpperCase() +
+                          path.slice(2)}
+                  </Link>
+                </li>
+              ))}
             </ul>
 
             <div className="d-flex flex-column align-items-end justify-content-center">
@@ -126,11 +128,11 @@ const Header = () => {
                   className="language-select"
                   style={{ width: 120 }}
                 >
-                  {countries.map((country) => (
-                    <Option key={country.code} value={country.code}>
+                  {Object.values(countries).map(({ code }) => (
+                    <Option key={code} value={code}>
                       <span className="country-flag">
                         <CountryFlag
-                          countryCode={country.code}
+                          countryCode={code}
                           svg
                           style={{
                             width: "20px",
@@ -138,7 +140,7 @@ const Header = () => {
                             marginRight: "8px",
                           }}
                         />
-                        {country.code.toUpperCase()}
+                        {code}
                       </span>
                     </Option>
                   ))}
@@ -154,7 +156,7 @@ const Header = () => {
                       className="btn-outline-light me-2"
                       style={{ minWidth: "100px" }}
                     >
-                      {translations[language].cart}
+                      {translations.cart || "Cart"}
                     </Button>
                     <Button
                       type="default"
@@ -163,7 +165,7 @@ const Header = () => {
                       className="btn-outline-light"
                       style={{ minWidth: "100px" }}
                     >
-                      {translations[language].logout}
+                      {translations.logout || "Logout"}
                     </Button>
                   </>
                 ) : (
@@ -174,7 +176,7 @@ const Header = () => {
                       className="btn-outline-light"
                       style={{ minWidth: "100px" }}
                     >
-                      {translations[language].login}
+                      {translations.login || "Login"}
                     </Button>
                   </Link>
                 )}

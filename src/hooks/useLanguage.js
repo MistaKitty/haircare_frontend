@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
 const useLanguage = () => {
@@ -10,6 +10,13 @@ const useLanguage = () => {
     setLanguage(lang);
     Cookies.set("language", lang, { expires: 365 });
   };
+
+  useEffect(() => {
+    const langFromCookies = Cookies.get("language");
+    if (langFromCookies) {
+      setLanguage(langFromCookies);
+    }
+  }, []);
 
   return { language, changeLanguage };
 };

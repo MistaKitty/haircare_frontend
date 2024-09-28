@@ -1,0 +1,16 @@
+{
+  "home": "मुख्य पृष्ठ",
+  "services": "सेवाएँ",
+  "about": "हमारे बारे में",
+  "contact": "संपर्क करें",
+  "cart": "गाड़ी",
+  "logout": "लॉग आउट",
+  "login": "लॉग इन",
+  "register": "पंजीकरण",
+  "emailPlaceholder": "ईमेल",
+  "passwordPlaceholder": "पासवर्ड",
+  "loggingIn": "लॉग इन कर रहे हैं... कृपया प्रतीक्षा करें...",
+  "noTokenReceived": "कोई टोकन प्राप्त नहीं हुआ।",
+  "loginFailed": "लॉग इन करने में विफल।",
+  "unexpectedError": "अनपेक्षित त्रुटि।"
+}

@@ -1,0 +1,16 @@
+{
+  "home": "首页",
+  "services": "服务",
+  "about": "关于我们",
+  "contact": "联系方式",
+  "cart": "购物车",
+  "logout": "退出",
+  "login": "登录",
+  "register": "注册",
+  "emailPlaceholder": "电子邮件",
+  "passwordPlaceholder": "密码",
+  "loggingIn": "正在登录... 请稍候...",
+  "noTokenReceived": "未收到令牌。",
+  "loginFailed": "登录失败。",
+  "unexpectedError": "意外错误。"
+}

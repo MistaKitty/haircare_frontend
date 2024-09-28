@@ -6,14 +6,7 @@
     "contact": "Contato",
     "cart": "Carrinho",
     "logout": "Sair",
-    "login": "Entrar",
-    "register": "Registar",
-    "emailPlaceholder": "Email",
-    "passwordPlaceholder": "Palavra-passe",
-    "loggingIn": "A iniciar sessão... Por favor aguarde...",
-    "noTokenReceived": "Nenhum token recebido.",
-    "loginFailed": "Falha ao iniciar sessão.",
-    "unexpectedError": "Erro inesperado."
+    "login": "Entrar"
   },
   "US": {
     "home": "Home",
@@ -22,13 +15,6 @@
     "contact": "Contact",
     "cart": "Cart",
     "logout": "Logout",
-    "login": "Login",
-    "register": "Register",
-    "emailPlaceholder": "Email",
-    "passwordPlaceholder": "Password",
-    "loggingIn": "Logging in... Please wait...",
-    "noTokenReceived": "No token received.",
-    "loginFailed": "Login failed.",
-    "unexpectedError": "Unexpected error."
+    "login": "Login"
   }
 }

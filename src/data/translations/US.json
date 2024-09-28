@@ -1,0 +1,16 @@
+{
+  "home": "Home",
+  "services": "Services",
+  "about": "About Us",
+  "contact": "Contact",
+  "cart": "Cart",
+  "logout": "Logout",
+  "login": "Login",
+  "register": "Register",
+  "emailPlaceholder": "Email",
+  "passwordPlaceholder": "Password",
+  "loggingIn": "Logging in... Please wait...",
+  "noTokenReceived": "No token received.",
+  "loginFailed": "Login failed.",
+  "unexpectedError": "Unexpected error."
+}

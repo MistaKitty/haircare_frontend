@@ -1,0 +1,16 @@
+{
+  "home": "Inicio",
+  "services": "Servicios",
+  "about": "Sobre nosotros",
+  "contact": "Contacto",
+  "cart": "Carrito",
+  "logout": "Cerrar sesión",
+  "login": "Iniciar sesión",
+  "register": "Registrar",
+  "emailPlaceholder": "Correo electrónico",
+  "passwordPlaceholder": "Contraseña",
+  "loggingIn": "Iniciando sesión... Por favor espera...",
+  "noTokenReceived": "No se recibió ningún token.",
+  "loginFailed": "Error al iniciar sesión.",
+  "unexpectedError": "Error inesperado."
+}

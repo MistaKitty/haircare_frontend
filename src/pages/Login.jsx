@@ -4,7 +4,7 @@ import axios from "axios";
 import { Input, Button, Spin, Typography, Alert, Space } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Login.css";
-import translations from "../data/translations.json";
+import Cookies from "js-cookie";
 
 const { Title } = Typography;
 
@@ -15,9 +15,26 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [translations, setTranslations] = useState({});
 
   const navigate = useNavigate();
-  const language = "PT";
+  const language = Cookies.get("language") || "PT";
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      try {
+        const translationModule = await import(
+          `../data/translations/${language}.json`
+        );
+        setTranslations(translationModule);
+      } catch (err) {
+        console.error("Error loading translations:", err);
+        setTranslations({});
+      }
+    };
+
+    loadTranslations();
+  }, [language]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,28 +42,23 @@ const Login = () => {
     setError("");
 
     const apiUrl = isRemote
-      ? import.meta.env.VITE_API_URL_REMOTE + "/api/auth/login"
-      : import.meta.env.VITE_BACKEND_URL + "/api/auth/login";
+      ? `${import.meta.env.VITE_API_URL_REMOTE}/api/auth/login`
+      : `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`;
 
     try {
-      const response = await axios.post(apiUrl, {
-        email,
-        password,
-      });
+      const response = await axios.post(apiUrl, { email, password });
 
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         navigate("/");
       } else {
-        setError(translations[language].noTokenReceived);
+        setError(translations.noTokenReceived);
       }
     } catch (err) {
       if (err.response && err.response.data) {
-        setError(
-          err.response.data.message || translations[language].loginFailed
-        );
+        setError(err.response.data.message || translations.loginFailed);
       } else {
-        setError(translations[language].unexpectedError);
+        setError(translations.unexpectedError);
       }
     } finally {
       setLoading(false);
@@ -59,16 +71,15 @@ const Login = () => {
 
   return (
     <div className="container">
-      {!loading && (
+      {!loading ? (
         <Title level={2} className="text-center text-white">
-          {translations[language].login}
+          {translations.login}
         </Title>
-      )}
-      {loading && (
+      ) : (
         <div className="text-center">
           <Spin size="large" className="my-4" />
           <Typography.Text className="d-block italic text-white">
-            {translations[language].loggingIn}
+            {translations.loggingIn}
           </Typography.Text>
         </div>
       )}
@@ -80,14 +91,14 @@ const Login = () => {
           <Space direction="vertical" style={{ width: "100%" }}>
             <Input
               type="email"
-              placeholder={translations[language].emailPlaceholder}
+              placeholder={translations.emailPlaceholder}
               size="large"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <Input.Password
-              placeholder={translations[language].passwordPlaceholder}
+              placeholder={translations.passwordPlaceholder}
               size="large"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -101,15 +112,15 @@ const Login = () => {
                   size="large"
                   className="flex-1 me-2"
                 >
-                  {translations[language].login}
+                  {translations.login}
                 </Button>
                 <Button
                   type="default"
                   size="large"
-                  onClick={handleRegister}
                   className="flex-1"
+                  onClick={handleRegister}
                 >
-                  {translations[language].register}
+                  {translations.register}
                 </Button>
               </Space>
             </div>
