@@ -11,6 +11,7 @@ import translations from "../data/translations.json";
 import countries from "../data/countries.json";
 import CountryFlag from "react-country-flag";
 import "./Header.css";
+import useLanguage from "../hooks/useLanguage";
 
 const { Option } = Select;
 
@@ -21,6 +22,7 @@ const Header = () => {
   const [language, setLanguage] = useState(
     localStorage.getItem("language") || "PT"
   );
+  // const { language, changeLanguage } = useLanguage();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
