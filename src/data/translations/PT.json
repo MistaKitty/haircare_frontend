@@ -21,5 +21,9 @@
   "valueCustomerCare": "Atendimento ao Cliente",
   "valueInnovation": "Inovação",
   "servicesOffered": "Serviços Oferecidos",
-  "servicesDescription": "Oferecemos uma ampla gama de serviços ao domicílio, incluindo cortes de cabelo, coloração, tratamentos capilares e muito mais."
+  "namePlaceholder": "Nome",
+  "phonePrefix": "Prefixo",
+  "phoneNumberPlaceholder": "Número de Telemóvel",
+  "registrationFailed": "Falha ao registar.",
+  "registrationSuccess": "Registo bem-sucedido! A redirecionar para o login..."
 }

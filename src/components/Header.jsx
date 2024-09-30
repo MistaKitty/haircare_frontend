@@ -7,10 +7,10 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import logo from "../assets/logo.ico";
-import Cookies from "js-cookie";
 import CountryFlag from "react-country-flag";
 import "./Header.css";
 import countriesData from "../data/countries.json";
+import useLanguage from "../hooks/useLanguage";
 
 const { Option } = Select;
 
@@ -18,12 +18,11 @@ const Header = () => {
   const location = useLocation();
   const isLoggedIn = Boolean(localStorage.getItem("token"));
   const [menuOpen, setMenuOpen] = useState(false);
-  const [language, setLanguage] = useState(
-    localStorage.getItem("language") || "PT"
-  );
   const [translations, setTranslations] = useState({});
   const [countries, setCountries] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  const { language, changeLanguage } = useLanguage();
 
   useEffect(() => {
     const loadTranslations = async () => {
@@ -55,9 +54,7 @@ const Header = () => {
   };
 
   const handleLanguageChange = (value) => {
-    Cookies.set("language", value, { expires: 365 });
-    setLanguage(value);
-    localStorage.setItem("language", value);
+    changeLanguage(value);
     window.location.reload();
   };
 

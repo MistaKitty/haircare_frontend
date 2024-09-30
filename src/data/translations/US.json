@@ -12,5 +12,20 @@
   "loggingIn": "Logging in... Please wait...",
   "noTokenReceived": "No token received.",
   "loginFailed": "Login failed.",
-  "unexpectedError": "Unexpected error."
+  "unexpectedError": "Unexpected error.",
+  "aboutDescription": "We offer a unique home beauty and wellness experience, with highly skilled professionals dedicated to enhancing your natural beauty.",
+  "ourMission": "Our Mission",
+  "missionDescription": "To provide high-quality home services that exceed our customers' expectations and promote their confidence and self-esteem.",
+  "ourValues": "Our Values",
+  "valueQuality": "Quality",
+  "valueCustomerCare": "Customer Care",
+  "valueInnovation": "Innovation",
+  "servicesOffered": "Services Offered",
+  "servicesDescription": "We offer a wide range of home services, including haircuts, coloring, hair treatments, and more.",
+  "registrationSuccess": "Registration successful!",
+  "registrationFailed": "Registration failed.",
+  "name": "Name",
+  "phoneNumber": "Phone number",
+  "prefix": "Prefix",
+  "registering": "Registering"
 }

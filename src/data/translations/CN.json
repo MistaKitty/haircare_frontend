@@ -12,5 +12,20 @@
   "loggingIn": "正在登录... 请稍候...",
   "noTokenReceived": "未收到令牌。",
   "loginFailed": "登录失败。",
-  "unexpectedError": "意外错误。"
+  "unexpectedError": "意外错误。",
+  "aboutDescription": "我们提供独特的上门美容和健康服务，由经验丰富的专业人员为您展现自然之美。",
+  "ourMission": "我们的使命",
+  "missionDescription": "提供超越客户期望的高质量上门服务，提升他们的自信心和自尊。",
+  "ourValues": "我们的价值观",
+  "valueQuality": "质量",
+  "valueCustomerCare": "客户关怀",
+  "valueInnovation": "创新",
+  "servicesOffered": "提供的服务",
+  "servicesDescription": "我们提供广泛的上门服务，包括剪发、染发、头发护理等。",
+  "registrationSuccess": "注册成功！",
+  "registrationFailed": "注册失败。",
+  "name": "姓名",
+  "phoneNumber": "电话号码",
+  "prefix": "前缀",
+  "registering": "正在注册"
 }

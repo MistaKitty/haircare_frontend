@@ -1,26 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button, Typography, Alert, Space, Select, Spin } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CountryFlag from "react-country-flag";
 import countries from "../data/countries.json";
+import useLanguage from "../hooks/useLanguage";
 import "./Register.css";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const isRemote = import.meta.env.VITE_APP_USE_REMOTE === "true";
-
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phonePrefix, setPhonePrefix] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phonePrefix: "351", // Portugal prefix default
+    phoneNumber: "",
+    country: "",
+  });
+
+  const { language } = useLanguage();
+  const [translations, setTranslations] = useState({});
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      try {
+        const translationModule = await import(
+          `../data/translations/${language}.json`
+        );
+        setTranslations(translationModule);
+      } catch (err) {
+        console.error("Error loading translations:", err);
+        setTranslations({});
+      }
+    };
+
+    loadTranslations();
+  }, [language]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,41 +49,47 @@ const Register = () => {
     setError("");
     setSuccess(false);
 
-    const apiUrl = isRemote
-      ? import.meta.env.VITE_API_URL_REMOTE + "/api/user"
-      : import.meta.env.VITE_BACKEND_URL + "/api/user";
+    const apiUrl = import.meta.env.VITE_API_URL_REMOTE + "/api/user";
 
     try {
       const response = await axios.post(apiUrl, {
-        name,
-        email,
-        password,
-        phonePrefix: phonePrefix.replace("+", ""),
-        phoneNumber,
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phonePrefix: formData.phonePrefix.replace("+", ""),
+        phoneNumber: formData.phoneNumber,
       });
 
       if (response.status === 201) {
         setSuccess(true);
         setTimeout(() => navigate("/login"), 2000);
       } else {
-        setError(response.data.message || "Registration failed");
+        setError(response.data.message || translations.registrationFailed);
       }
     } catch (err) {
+      console.error(err); // Adicionando console.error para melhor debug
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError("Registration failed: Unexpected error");
+        setError(translations.unexpectedError);
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   return (
     <div className="container">
       {success ? (
         <Alert
-          message="Registration successful! Redirecting to login..."
+          message={
+            translations.registrationSuccess ||
+            "Registration successful! Redirecting to login..."
+          }
           type="success"
           showIcon
           className="success-alert"
@@ -71,14 +98,14 @@ const Register = () => {
         <>
           {!loading && (
             <Title level={2} className="title text-white">
-              Register
+              {translations.register || "Register"}
             </Title>
           )}
           {loading ? (
             <div className="loading-container">
               <Spin size="large" className="loading-spinner" />
               <Typography.Text className="loading-text">
-                Registering... Please wait...
+                {translations.loggingIn || "Registering... Please wait..."}
               </Typography.Text>
             </div>
           ) : (
@@ -94,29 +121,37 @@ const Register = () => {
               <form onSubmit={handleSubmit}>
                 <Space direction="vertical" className="form-space">
                   <Input
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder={translations.namePlaceholder || "Name"}
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
                     required
                   />
                   <Input
                     type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={translations.emailPlaceholder || "Email"}
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     required
                   />
                   <Input.Password
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={translations.passwordPlaceholder || "Password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
                     required
                   />
                   <div className="phone-container">
                     <Select
-                      placeholder="Prefix"
-                      value={phonePrefix}
-                      onChange={setPhonePrefix}
+                      placeholder={
+                        translations.phonePrefixPlaceholder ||
+                        "Select Phone Prefix"
+                      }
+                      value={formData.phonePrefix}
+                      onChange={(value) =>
+                        setFormData({ ...formData, phonePrefix: value })
+                      }
                       required
                       className="phone-select"
                     >
@@ -134,15 +169,21 @@ const Register = () => {
                       ))}
                     </Select>
                     <Input
-                      placeholder="Phone Number"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder={
+                        translations.phoneNumberPlaceholder || "Phone Number"
+                      }
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
                       required
-                      className="phone-input"
                     />
                   </div>
-                  <Button type="primary" htmlType="submit" loading={loading}>
-                    Register
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="submit-btn"
+                  >
+                    {translations.register || "Register"}
                   </Button>
                 </Space>
               </form>

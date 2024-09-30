@@ -12,5 +12,20 @@
   "loggingIn": "Iniciando sesión... Por favor espera...",
   "noTokenReceived": "No se recibió ningún token.",
   "loginFailed": "Error al iniciar sesión.",
-  "unexpectedError": "Error inesperado."
+  "unexpectedError": "Error inesperado.",
+  "aboutDescription": "Ofrecemos una experiencia única de belleza y bienestar a domicilio, con profesionales altamente cualificados dedicados a resaltar tu belleza natural.",
+  "ourMission": "Nuestra misión",
+  "missionDescription": "Proporcionar servicios de alta calidad a domicilio que superen las expectativas de nuestros clientes y promuevan su confianza y autoestima.",
+  "ourValues": "Nuestros valores",
+  "valueQuality": "Calidad",
+  "valueCustomerCare": "Atención al cliente",
+  "valueInnovation": "Innovación",
+  "servicesOffered": "Servicios ofrecidos",
+  "servicesDescription": "Ofrecemos una amplia gama de servicios a domicilio, incluyendo cortes de cabello, coloración, tratamientos capilares y mucho más.",
+  "registrationSuccess": "¡Registro exitoso!",
+  "registrationFailed": "Error al registrar.",
+  "name": "Nombre",
+  "phoneNumber": "Número de teléfono",
+  "prefix": "Prefijo",
+  "registering": "Registrando"
 }
