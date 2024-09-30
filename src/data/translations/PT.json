@@ -36,5 +36,15 @@
   "contactUs": "Contacte-nos",
   "whatsappGreeting": "Olá! Como posso ajudá-lo?",
   "phoneLabel": "Telefone:",
-  "emailLabel": "Email: "
+  "emailLabel": "Email: ",
+  "appointmentAccepted": "Agendamento aceite com sucesso!",
+  "appointmentRejected": "Agendamento rejeitado com sucesso!",
+  "clientEmail": "Email do Cliente",
+  "status": "Status",
+  "actions": "Ações",
+  "viewDetails": "Ver Detalhes",
+  "date": "Data",
+  "time": "Hora",
+  "appointmentDetails": "Detalhes do Agendamento",
+  "loadingAppointments": "A carregar agendamentos... Por favor aguarde..."
 }

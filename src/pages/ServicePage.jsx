@@ -67,12 +67,11 @@ const Services = () => {
             <h2
               className="d-flex flex-column align-items-center mt-4 mb-2"
               onClick={() => toggleExpand(treatment)}
-              style={{ cursor: "pointer" }} // Adiciona um cursor de ponteiro para indicar que é clicável
+              style={{ cursor: "pointer" }}
             >
               {treatment} {expandedSections[treatment] ? "▲" : "▼"}{" "}
-              {/* Sinal de expandir/minimizar */}
             </h2>
-            {expandedSections[treatment] && ( // Condicional para mostrar as cartas
+            {expandedSections[treatment] && (
               <Row gutter={16} className="d-flex justify-content-around">
                 {groupedServices[treatment].map((service, index) => (
                   <Col span={8} key={index} className="mb-4">

@@ -5,17 +5,17 @@ import { useNavigate } from "react-router-dom";
 import CountryFlag from "react-country-flag";
 import countries from "../data/countries.json";
 import useLanguage from "../hooks/useLanguage";
-import "./Register.css";
+import "./RegisterPage.css";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const Register = () => {
+const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    phonePrefix: "351", // Portugal prefix default
+    phonePrefix: "351",
     phoneNumber: "",
     country: "",
   });
@@ -67,7 +67,7 @@ const Register = () => {
         setError(response.data.message || translations.registrationFailed);
       }
     } catch (err) {
-      console.error(err); // Adicionando console.error para melhor debug
+      console.error(err);
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
@@ -195,4 +195,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;

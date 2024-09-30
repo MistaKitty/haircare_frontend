@@ -115,6 +115,18 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
+              {isLoggedIn && ( // Só mostra Appointments se estiver logado
+                <li className="nav-item">
+                  <Link
+                    className={`nav-link ${
+                      location.pathname === "/appointments" ? "active" : ""
+                    }`}
+                    to="/appointments"
+                  >
+                    {translations.appointments || "Appointments"}
+                  </Link>
+                </li>
+              )}
             </ul>
 
             <div

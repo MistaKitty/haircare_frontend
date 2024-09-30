@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input, Button, Spin, Typography, Alert, Space } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Login.css";
+import "./LoginPage.css";
 import Cookies from "js-cookie";
 
 const { Title } = Typography;
 
 const isRemote = import.meta.env.VITE_APP_USE_REMOTE === "true";
 
-const Login = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -131,4 +131,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
