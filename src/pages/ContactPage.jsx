@@ -59,8 +59,6 @@ const ContactPage = () => {
   const workingHours =
     translations.workingHours || "Horário: Seg - Sex, 9h - 18h";
 
-  const inputWidth = 400;
-
   return (
     <div
       className="contact-container d-flex flex-column align-items-center justify-content-start min-vh-100"
@@ -96,7 +94,11 @@ const ContactPage = () => {
         </Text>
         <Text className="white-text">{workingHours}</Text>
       </Space>
-      <form onSubmit={handleSubmit} className="mx-auto">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto w-100"
+        style={{ maxWidth: "600px" }}
+      >
         <Space direction="vertical" size="large" className="w-100">
           <Input
             placeholder={translations.namePlaceholder || "Nome"}
@@ -105,7 +107,7 @@ const ContactPage = () => {
             onChange={handleInputChange}
             required
             className="text-center"
-            style={{ width: inputWidth }}
+            style={{ width: "100%" }}
           />
           <Input
             type="email"
@@ -115,9 +117,16 @@ const ContactPage = () => {
             onChange={handleInputChange}
             required
             className="text-center"
-            style={{ width: inputWidth }}
+            style={{ width: "100%" }}
           />
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              flexWrap: "wrap",
+            }}
+          >
             <Select
               placeholder={
                 translations.phonePrefixPlaceholder || "Selecionar Prefixo"
@@ -126,7 +135,7 @@ const ContactPage = () => {
               onChange={handlePrefixChange}
               required
               className="phone-select"
-              style={{ width: "120px" }}
+              style={{ flex: "0 0 120px" }}
             >
               {countries.map((country) => (
                 <Option key={country.code} value={country.prefix}>
@@ -150,7 +159,7 @@ const ContactPage = () => {
               onChange={handleInputChange}
               required
               className="text-center"
-              style={{ width: "274px" }}
+              style={{ flex: "1", minWidth: "150px" }}
             />
           </div>
           <Input.TextArea
@@ -159,13 +168,13 @@ const ContactPage = () => {
             value={formData.message}
             onChange={handleInputChange}
             required
-            style={{ width: inputWidth, height: "120px" }}
+            style={{ width: "100%", height: "120px" }}
           />
           <Button
             type="primary"
             htmlType="submit"
             className="w-100"
-            style={{ width: inputWidth }}
+            style={{ width: "100%" }}
           >
             {translations.send || "Enviar"}
           </Button>
