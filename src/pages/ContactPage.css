@@ -1,0 +1,3 @@
+.white-text {
+  color: white !important; /* O !important assegura que esta regra tenha prioridade */
+}
