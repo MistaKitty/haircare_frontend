@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Table, Typography, Alert, Space, Spin, Modal } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./AppointmentsPage.css"; // Ajusta o nome do CSS conforme necessário
+import "./AppointmentsPage.css";
 import Cookies from "js-cookie";
+import dayjs from "dayjs";
 
 const { Title } = Typography;
 
@@ -19,8 +20,8 @@ const AppointmentsPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  const navigate = useNavigate();
   const language = Cookies.get("language") || "PT";
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadTranslations = async () => {
@@ -29,8 +30,8 @@ const AppointmentsPage = () => {
           `../data/translations/${language}.json`
         );
         setTranslations(translationModule);
-      } catch (err) {
-        console.error("Error loading translations:", err);
+      } catch (error) {
+        console.error("Error loading translations:", error);
         setTranslations({});
       }
     };
@@ -44,51 +45,76 @@ const AppointmentsPage = () => {
     setError("");
     try {
       const apiUrl = isRemote
-        ? `${import.meta.env.VITE_API_URL_REMOTE}/api/appointments`
-        : `${import.meta.env.VITE_BACKEND_URL}/api/appointments`;
+        ? `${import.meta.env.VITE_API_URL_REMOTE}/api/appointment`
+        : `${import.meta.env.VITE_BACKEND_URL}/api/appointment`;
 
-      const response = await axios.get(apiUrl);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("Token não encontrado. Por favor, faça login.");
+        return;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setAppointments(response.data);
-    } catch (err) {
-      setError(translations.unexpectedError);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      if (error.response && error.response.status === 401) {
+        setError("Erro de autenticação. Por favor, faça login novamente.");
+        navigate("/login");
+      } else {
+        setError(
+          translations.unexpectedError ||
+            "Erro inesperado ao carregar agendamentos."
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAccept = async (appointmentId) => {
+  const handleAppointmentAction = async (appointmentId, action) => {
     try {
       const apiUrl = isRemote
         ? `${
             import.meta.env.VITE_API_URL_REMOTE
-          }/api/appointments/accept/${appointmentId}`
+          }/api/appointments/${action}/${appointmentId}`
         : `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/appointments/accept/${appointmentId}`;
+          }/api/appointments/${action}/${appointmentId}`;
 
-      await axios.post(apiUrl);
-      setSuccess(translations.appointmentAccepted);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("Token não encontrado. Por favor, faça login.");
+        return;
+      }
+
+      await axios.post(
+        apiUrl,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setSuccess(
+        translations[
+          `${action.charAt(0).toUpperCase() + action.slice(1)}Appointment`
+        ]
+      );
       fetchAppointments();
-    } catch (err) {
-      setError(translations.unexpectedError);
-    }
-  };
-
-  const handleReject = async (appointmentId) => {
-    try {
-      const apiUrl = isRemote
-        ? `${
-            import.meta.env.VITE_API_URL_REMOTE
-          }/api/appointments/reject/${appointmentId}`
-        : `${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/appointments/reject/${appointmentId}`;
-
-      await axios.post(apiUrl);
-      setSuccess(translations.appointmentRejected);
-      fetchAppointments();
-    } catch (err) {
-      setError(translations.unexpectedError);
+    } catch (error) {
+      console.error("Error performing appointment action:", error);
+      setError(
+        translations.unexpectedError || "Erro inesperado ao realizar a ação."
+      );
     }
   };
 
@@ -105,22 +131,24 @@ const AppointmentsPage = () => {
   const columns = [
     {
       title: translations.date,
-      dataIndex: "date",
+      dataIndex: "appointment.date",
       key: "date",
+      render: (date) => dayjs(date).format("DD/MM/YYYY"),
     },
     {
       title: translations.time,
-      dataIndex: "time",
+      dataIndex: "appointment.date",
       key: "time",
+      render: (date) => dayjs(date).format("HH:mm"),
     },
     {
       title: translations.clientEmail,
-      dataIndex: "clientEmail",
+      dataIndex: "user.email",
       key: "clientEmail",
     },
     {
       title: translations.status,
-      dataIndex: "status",
+      dataIndex: "appointment.status",
       key: "status",
     },
     {
@@ -128,10 +156,16 @@ const AppointmentsPage = () => {
       key: "actions",
       render: (text, appointment) => (
         <Space size="middle">
-          <Button onClick={() => handleAccept(appointment._id)}>
+          <Button
+            onClick={() => handleAppointmentAction(appointment._id, "accept")}
+            disabled={appointment.status !== "pending"}
+          >
             {translations.accept}
           </Button>
-          <Button onClick={() => handleReject(appointment._id)}>
+          <Button
+            onClick={() => handleAppointmentAction(appointment._id, "reject")}
+            disabled={appointment.status !== "pending"}
+          >
             {translations.reject}
           </Button>
           <Button onClick={() => handleModalOpen(appointment)}>
@@ -162,7 +196,6 @@ const AppointmentsPage = () => {
         <Alert message={success} type="success" showIcon className="mb-3" />
       )}
       <Table dataSource={appointments} columns={columns} rowKey="_id" />
-
       <Modal
         title={translations.appointmentDetails}
         visible={isModalVisible}
@@ -173,19 +206,29 @@ const AppointmentsPage = () => {
           <div>
             <p>
               <strong>{translations.clientEmail}: </strong>
-              {selectedAppointment.clientEmail}
+              {selectedAppointment.user.email}
             </p>
             <p>
               <strong>{translations.date}: </strong>
-              {selectedAppointment.date}
+              {dayjs(selectedAppointment.appointment.date).format("DD/MM/YYYY")}
             </p>
             <p>
               <strong>{translations.time}: </strong>
-              {selectedAppointment.time}
+              {dayjs(selectedAppointment.appointment.date).format("HH:mm")}
             </p>
             <p>
               <strong>{translations.status}: </strong>
-              {selectedAppointment.status}
+              {selectedAppointment.appointment.status}
+            </p>
+            <p>
+              <strong>{translations.services}: </strong>
+              {selectedAppointment.appointment.services
+                .map((service) => service.serviceName)
+                .join(", ")}
+            </p>
+            <p>
+              <strong>{translations.location}: </strong>
+              {`${selectedAppointment.appointment.location.street}, ${selectedAppointment.appointment.location.locality}`}
             </p>
           </div>
         )}
