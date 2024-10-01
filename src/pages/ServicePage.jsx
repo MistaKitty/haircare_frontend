@@ -13,7 +13,10 @@ import {
   Button,
   Switch,
   InputNumber,
+  Select,
 } from "antd";
+
+const { Option } = Select;
 
 const Services = ({ cart, setCart }) => {
   const [services, setServices] = useState([]);
@@ -24,6 +27,7 @@ const Services = ({ cart, setCart }) => {
   const [addingService, setAddingService] = useState(false);
   const [form] = Form.useForm();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const fetchServices = async () => {
     try {
@@ -55,6 +59,7 @@ const Services = ({ cart, setCart }) => {
       try {
         const decodedToken = jwtDecode(token);
         setIsAdmin(decodedToken.role === "admin");
+        setIsLoggedIn(true);
       } catch (error) {
         console.error("Token inválido:", error);
       }
@@ -199,8 +204,9 @@ const Services = ({ cart, setCart }) => {
     }
   };
 
-  const handleAddToCart = (service) => {
-    setCart((prevCart) => [...prevCart, service]);
+  const handleAddToCart = (service, quantity) => {
+    const serviceWithQuantity = { ...service, quantity };
+    setCart((prevCart) => [...prevCart, serviceWithQuantity]);
     message.success(`${service.treatments} adicionado ao carrinho!`);
   };
 
@@ -261,13 +267,26 @@ const Services = ({ cart, setCart }) => {
                       <p className="text-white text-center">
                         {service.description}
                       </p>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <Button
-                          type="default"
-                          onClick={() => handleAddToCart(service)}
-                        >
-                          Adicionar ao Carrinho
-                        </Button>
+                      <div className="d-flex justify-content-around align-items-center">
+                        {isLoggedIn ? (
+                          <>
+                            <InputNumber
+                              min={1}
+                              defaultValue={1}
+                              style={{ width: "50px", marginRight: "10px" }}
+                            />
+                            <Button
+                              type="default"
+                              onClick={() => handleAddToCart(service, 1)}
+                            >
+                              Adicionar ao Carrinho
+                            </Button>
+                          </>
+                        ) : (
+                          <p className="text-red-500">
+                            Por favor, faça login para adicionar ao carrinho.
+                          </p>
+                        )}
                         {isAdmin && (
                           <>
                             <Button
@@ -290,9 +309,9 @@ const Services = ({ cart, setCart }) => {
                             </Button>
                             <Switch
                               checked={service.isActive}
-                              onChange={() => {
-                                handleHide(service._id, service.isActive);
-                              }}
+                              onChange={() =>
+                                handleHide(service._id, service.isActive)
+                              }
                               checkedChildren="Ativo"
                               unCheckedChildren="Inativo"
                             />
@@ -316,36 +335,44 @@ const Services = ({ cart, setCart }) => {
         <Form form={form} onFinish={handleEditSubmit}>
           <Form.Item
             name="treatments"
-            label="Tratamento"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            label="Tratamentos"
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <Input />
+            <Select placeholder="Selecionar tratamento">
+              <Option value="haircut">Corte de cabelo</Option>
+              <Option value="color">Coloração</Option>
+              <Option value="shampoo">Shampoo</Option>
+            </Select>
           </Form.Item>
           <Form.Item
             name="hairLength"
             label="Comprimento do Cabelo"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <Input />
+            <Select placeholder="Selecionar comprimento">
+              <Option value="short">Curto</Option>
+              <Option value="medium">Médio</Option>
+              <Option value="long">Longo</Option>
+            </Select>
           </Form.Item>
           <Form.Item
             name="description"
             label="Descrição"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Input.TextArea />
           </Form.Item>
           <Form.Item
             name="price"
             label="Preço"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <InputNumber min={0} step={0.01} />
+            <InputNumber min={0} />
           </Form.Item>
           <Form.Item
             name="duration"
             label="Duração (min)"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <InputNumber min={0} />
           </Form.Item>
@@ -365,36 +392,44 @@ const Services = ({ cart, setCart }) => {
         <Form form={form} onFinish={handleAddSubmit}>
           <Form.Item
             name="treatments"
-            label="Tratamento"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            label="Tratamentos"
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <Input />
+            <Select placeholder="Selecionar tratamento">
+              <Option value="haircut">Corte de cabelo</Option>
+              <Option value="color">Coloração</Option>
+              <Option value="shampoo">Shampoo</Option>
+            </Select>
           </Form.Item>
           <Form.Item
             name="hairLength"
             label="Comprimento do Cabelo"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <Input />
+            <Select placeholder="Selecionar comprimento">
+              <Option value="short">Curto</Option>
+              <Option value="medium">Médio</Option>
+              <Option value="long">Longo</Option>
+            </Select>
           </Form.Item>
           <Form.Item
             name="description"
             label="Descrição"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Input.TextArea />
           </Form.Item>
           <Form.Item
             name="price"
             label="Preço"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <InputNumber min={0} step={0.01} />
+            <InputNumber min={0} />
           </Form.Item>
           <Form.Item
             name="duration"
             label="Duração (min)"
-            rules={[{ required: true, message: "Campo obrigatório!" }]}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <InputNumber min={0} />
           </Form.Item>
