@@ -119,35 +119,29 @@ const RegisterPage = () => {
               )}
               <form onSubmit={handleSubmit}>
                 <Space direction="vertical" className="form-space">
-                  <label htmlFor="name">
-                    {translations.namePlaceholder || "Name"}
-                  </label>
                   <Input
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
+                    placeholder={translations.namePlaceholder || "Name"} // Adicionando placeholder
                     required
                   />
-                  <label htmlFor="email">
-                    {translations.emailPlaceholder || "Email"}
-                  </label>
                   <Input
                     id="email"
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
+                    placeholder={translations.emailPlaceholder || "Email"} // Adicionando placeholder
                     required
                   />
-                  <label htmlFor="password">
-                    {translations.passwordPlaceholder || "Password"}
-                  </label>
                   <Input.Password
                     id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
+                    placeholder={translations.passwordPlaceholder || "Password"} // Adicionando placeholder
                     required
                   />
                   <div className="phone-container">
@@ -178,12 +172,12 @@ const RegisterPage = () => {
                     </Select>
                     <Input
                       id="phoneNumber"
-                      placeholder={
-                        translations.phoneNumberPlaceholder || "Phone Number"
-                      }
                       name="phoneNumber"
                       value={formData.phoneNumber}
                       onChange={handleInputChange}
+                      placeholder={
+                        translations.phoneNumberPlaceholder || "Phone Number" // Adicionando placeholder
+                      }
                       required
                     />
                   </div>
