@@ -12,13 +12,10 @@ import {
   Input,
   Button,
   Switch,
-  Select,
   InputNumber,
 } from "antd";
 
-const { Option } = Select;
-
-const Services = () => {
+const Services = ({ cart, setCart }) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,7 +38,6 @@ const Services = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Services fetched:", response.data);
       setServices(response.data);
     } catch (err) {
       setError(err.message);
@@ -65,7 +61,11 @@ const Services = () => {
     }
   }, []);
 
-  const groupedServices = services.reduce((acc, service) => {
+  const filteredServices = isAdmin
+    ? services
+    : services.filter((service) => service.isActive);
+
+  const groupedServices = filteredServices.reduce((acc, service) => {
     const { treatments, hairLength, description, price, duration, isActive } =
       service;
     if (!acc[treatments]) {
@@ -76,8 +76,8 @@ const Services = () => {
       description,
       price,
       duration,
-      isActive, // Use isActive aqui
-      _id: service._id, // Use _id aqui
+      isActive,
+      _id: service._id,
     });
     return acc;
   }, {});
@@ -199,6 +199,11 @@ const Services = () => {
     }
   };
 
+  const handleAddToCart = (service) => {
+    setCart((prevCart) => [...prevCart, service]);
+    message.success(`${service.treatments} adicionado ao carrinho!`);
+  };
+
   if (loading) {
     return (
       <div className="text-center p-4">
@@ -236,8 +241,6 @@ const Services = () => {
               <Row gutter={16} className="d-flex justify-content-around">
                 {groupedServices[treatment].map((service) => (
                   <Col span={8} key={service._id} className="mb-4">
-                    {" "}
-                    {/* Usar _id aqui */}
                     <Card
                       bordered={false}
                       className="bg-gray-800 text-white"
@@ -258,35 +261,44 @@ const Services = () => {
                       <p className="text-white text-center">
                         {service.description}
                       </p>
-                      {isAdmin && (
-                        <div className="d-flex justify-content-between align-items-center">
-                          <Button
-                            type="primary"
-                            onClick={() => handleEdit(service)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            danger
-                            onClick={() => {
-                              Modal.confirm({
-                                title:
-                                  "Tem a certeza que deseja remover este serviço?",
-                                onOk: () => handleRemove(service._id), // Usar _id aqui
-                              });
-                            }}
-                          >
-                            Remover
-                          </Button>
-                          <Switch
-                            checked={service.isActive}
-                            onChange={() => {
-                              console.log("Service ID:", service._id); // Debug do ID
-                              handleHide(service._id, service.isActive);
-                            }}
-                          />
-                        </div>
-                      )}
+                      <div className="d-flex justify-content-between align-items-center">
+                        <Button
+                          type="default"
+                          onClick={() => handleAddToCart(service)}
+                        >
+                          Adicionar ao Carrinho
+                        </Button>
+                        {isAdmin && (
+                          <>
+                            <Button
+                              type="primary"
+                              onClick={() => handleEdit(service)}
+                            >
+                              Editar
+                            </Button>
+                            <Button
+                              danger
+                              onClick={() => {
+                                Modal.confirm({
+                                  title:
+                                    "Tem a certeza que deseja remover este serviço?",
+                                  onOk: () => handleRemove(service._id),
+                                });
+                              }}
+                            >
+                              Remover
+                            </Button>
+                            <Switch
+                              checked={service.isActive}
+                              onChange={() => {
+                                handleHide(service._id, service.isActive);
+                              }}
+                              checkedChildren="Ativo"
+                              unCheckedChildren="Inativo"
+                            />
+                          </>
+                        )}
+                      </div>
                     </Card>
                   </Col>
                 ))}
@@ -305,33 +317,37 @@ const Services = () => {
           <Form.Item
             name="treatments"
             label="Tratamento"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="hairLength"
             label="Comprimento do Cabelo"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="description"
             label="Descrição"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
-            <Input />
+            <Input.TextArea />
           </Form.Item>
-          <Form.Item name="price" label="Preço" rules={[{ required: true }]}>
-            <InputNumber min={0} />
+          <Form.Item
+            name="price"
+            label="Preço"
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
+          >
+            <InputNumber min={0} step={0.01} />
           </Form.Item>
           <Form.Item
             name="duration"
             label="Duração (min)"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
-            <InputNumber min={1} />
+            <InputNumber min={0} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
@@ -350,33 +366,37 @@ const Services = () => {
           <Form.Item
             name="treatments"
             label="Tratamento"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="hairLength"
             label="Comprimento do Cabelo"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="description"
             label="Descrição"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
-            <Input />
+            <Input.TextArea />
           </Form.Item>
-          <Form.Item name="price" label="Preço" rules={[{ required: true }]}>
-            <InputNumber min={0} />
+          <Form.Item
+            name="price"
+            label="Preço"
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
+          >
+            <InputNumber min={0} step={0.01} />
           </Form.Item>
           <Form.Item
             name="duration"
             label="Duração (min)"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Campo obrigatório!" }]}
           >
-            <InputNumber min={1} />
+            <InputNumber min={0} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
