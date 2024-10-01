@@ -312,8 +312,8 @@ const Services = ({ cart, setCart }) => {
                               onChange={() =>
                                 handleHide(service._id, service.isActive)
                               }
-                              checkedChildren="Ativo"
-                              unCheckedChildren="Inativo"
+                              checkedChildren="Visível"
+                              unCheckedChildren="Escondido"
                             />
                           </>
                         )}
@@ -326,120 +326,120 @@ const Services = ({ cart, setCart }) => {
           </Col>
         ))}
       </Row>
-      <Modal
-        visible={!!editingService}
-        title="Editar Serviço"
-        onCancel={() => setEditingService(null)}
-        footer={null}
-      >
-        <Form form={form} onFinish={handleEditSubmit}>
-          <Form.Item
-            name="treatments"
-            label="Tratamentos"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <Select placeholder="Selecionar tratamento">
-              <Option value="haircut">Corte de cabelo</Option>
-              <Option value="color">Coloração</Option>
-              <Option value="shampoo">Shampoo</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="hairLength"
-            label="Comprimento do Cabelo"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <Select placeholder="Selecionar comprimento">
-              <Option value="short">Curto</Option>
-              <Option value="medium">Médio</Option>
-              <Option value="long">Longo</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Descrição"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Preço"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item
-            name="duration"
-            label="Duração (min)"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Atualizar Serviço
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Modal
-        visible={addingService}
-        title="Adicionar Serviço"
-        onCancel={() => setAddingService(false)}
-        footer={null}
-      >
-        <Form form={form} onFinish={handleAddSubmit}>
-          <Form.Item
-            name="treatments"
-            label="Tratamentos"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <Select placeholder="Selecionar tratamento">
-              <Option value="haircut">Corte de cabelo</Option>
-              <Option value="color">Coloração</Option>
-              <Option value="shampoo">Shampoo</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="hairLength"
-            label="Comprimento do Cabelo"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <Select placeholder="Selecionar comprimento">
-              <Option value="short">Curto</Option>
-              <Option value="medium">Médio</Option>
-              <Option value="long">Longo</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Descrição"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Preço"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item
-            name="duration"
-            label="Duração (min)"
-            rules={[{ required: true, message: "Campo obrigatório" }]}
-          >
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Adicionar Serviço
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+
+      {editingService && (
+        <Modal
+          title="Editar Serviço"
+          visible={!!editingService}
+          onCancel={() => setEditingService(null)}
+          footer={null}
+        >
+          <Form form={form} onFinish={handleEditSubmit} layout="vertical">
+            <Form.Item
+              name="treatments"
+              label="Tratamentos"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="hairLength"
+              label="Comprimento do Cabelo"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <Select>
+                <Option value="Short">Curto</Option>
+                <Option value="Medium">Médio</Option>
+                <Option value="Long">Longo</Option>
+                <Option value="Extra long">Extra Longo</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Descrição"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="price"
+              label="Preço (€)"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+            <Form.Item
+              name="duration"
+              label="Duração (min)"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Atualizar Serviço
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
+
+      {addingService && (
+        <Modal
+          title="Adicionar Serviço"
+          visible={addingService}
+          onCancel={() => setAddingService(false)}
+          footer={null}
+        >
+          <Form form={form} onFinish={handleAddSubmit} layout="vertical">
+            <Form.Item
+              name="treatments"
+              label="Tratamentos"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="hairLength"
+              label="Comprimento do Cabelo"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <Select>
+                <Option value="Short">Curto</Option>
+                <Option value="Medium">Médio</Option>
+                <Option value="Long">Longo</Option>
+                <Option value="Extra long">Extra Longo</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Descrição"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="price"
+              label="Preço (€)"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+            <Form.Item
+              name="duration"
+              label="Duração (min)"
+              rules={[{ required: true, message: "Campo obrigatório!" }]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Adicionar Serviço
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
     </div>
   );
 };
