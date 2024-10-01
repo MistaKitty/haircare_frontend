@@ -1,36 +1,17 @@
 .container {
   max-width: 400px;
-  margin: 50px auto;
+  margin: auto;
   padding: 20px;
   background-color: #282c34;
-  border-radius: 8px;
-}
-
-.login-form {
-  margin-top: 20px;
-}
-
-.custom-button {
-  border-radius: 4px;
-}
-
-.ant-btn {
-  width: 100%;
-  border-radius: 4px;
-}
-
-.ant-input,
-.ant-input-password {
-  width: 100%;
-  border-radius: 4px;
-}
-
-.text-center {
-  text-align: center;
 }
 
 .text-white {
   color: white;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
 }
 
 .italic {
@@ -50,5 +31,5 @@
 }
 
 .me-2 {
-  margin-right: 10px;
+  margin-right: 8px;
 }

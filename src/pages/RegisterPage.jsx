@@ -68,11 +68,10 @@ const RegisterPage = () => {
       }
     } catch (err) {
       console.error(err);
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError(translations.unexpectedError);
-      }
+      setError(
+        (err.response && err.response.data && err.response.data.message) ||
+          translations.unexpectedError
+      );
     } finally {
       setLoading(false);
     }
@@ -83,7 +82,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container white-text">
       {success ? (
         <Alert
           message={
@@ -105,7 +104,7 @@ const RegisterPage = () => {
             <div className="loading-container">
               <Spin size="large" className="loading-spinner" />
               <Typography.Text className="loading-text">
-                {translations.loggingIn || "Registering... Please wait..."}
+                {translations.RegisterIn || "Registering... Please wait..."}
               </Typography.Text>
             </div>
           ) : (
@@ -120,23 +119,32 @@ const RegisterPage = () => {
               )}
               <form onSubmit={handleSubmit}>
                 <Space direction="vertical" className="form-space">
+                  <label htmlFor="name">
+                    {translations.namePlaceholder || "Name"}
+                  </label>
                   <Input
-                    placeholder={translations.namePlaceholder || "Name"}
+                    id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
                     required
                   />
+                  <label htmlFor="email">
+                    {translations.emailPlaceholder || "Email"}
+                  </label>
                   <Input
+                    id="email"
                     type="email"
-                    placeholder={translations.emailPlaceholder || "Email"}
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     required
                   />
+                  <label htmlFor="password">
+                    {translations.passwordPlaceholder || "Password"}
+                  </label>
                   <Input.Password
-                    placeholder={translations.passwordPlaceholder || "Password"}
+                    id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
@@ -169,6 +177,7 @@ const RegisterPage = () => {
                       ))}
                     </Select>
                     <Input
+                      id="phoneNumber"
                       placeholder={
                         translations.phoneNumberPlaceholder || "Phone Number"
                       }

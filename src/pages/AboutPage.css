@@ -1,28 +1,15 @@
 .about-container {
-  background-color: #000;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  background-color: #000000;
+  padding: 20px;
 }
 
-.white-text {
-  color: #fff;
+.about-section-title {
+  font-family: "Dancing Script", cursive;
+  font-size: 2em;
+  font-weight: 700;
 }
 
-.large-text {
-  font-size: 1.3em;
-  line-height: 1.5;
-}
-
-.white-line {
-  border-top: 1px solid #fff;
-  width: 60%;
-  margin: 20px auto;
-}
-
-.list-unstyled {
-  list-style: none;
+.custom-divider {
+  border-color: #ffffff;
+  margin: 30px 0;
 }

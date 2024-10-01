@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Divider, Space } from "antd";
 import useLanguage from "../hooks/useLanguage";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./AboutPage.css";
 
 const { Title, Text } = Typography;
@@ -39,47 +40,45 @@ const About = () => {
   } = translations;
 
   return (
-    <div className="about-container">
-      <Space direction="vertical" size="large">
-        <Title level={2} className="white-text">
+    <div className="text-center text-white about-container">
+      <Space direction="vertical" size={1} style={{ width: "100%" }}>
+        <Title level={2} className="mb-4 text-white">
           {about || "Sobre Nós"}
         </Title>
-        <Text className="white-text large-text">
-          {aboutDescription || "Descrição sobre a nossa empresa."}
+        <Text className="mb-3 text-white">
+          {aboutDescription ||
+            "Oferecemos uma experiência única de beleza e bem-estar ao domicílio, com profissionais altamente qualificados e dedicados a realçar a sua beleza natural."}
         </Text>
 
-        <Divider className="white-line" />
+        <Divider className="custom-divider" />
 
-        <Title level={3} className="white-text">
-          {ourMission || "A Nossa Missão"}
+        <Title level={3} className="about-section-title mb-1 text-white">
+          {ourMission || "Nossa Missão"}
         </Title>
-        <Text className="white-text large-text">
-          {missionDescription || "Descrição da nossa missão."}
+        <Text className="mb-3 text-white">
+          {missionDescription ||
+            "Proporcionar serviços de alta qualidade ao domicílio que superem as expectativas dos nossos clientes e promovam a sua confiança e autoestima."}
         </Text>
 
-        <Divider className="white-line" />
+        <Divider className="custom-divider" />
 
-        <Title level={3} className="white-text">
-          {ourValues || "Os Nossos Valores"}
+        <Title level={3} className="about-section-title mb-3 text-white">
+          {ourValues || "Nossos Valores"}
         </Title>
         <ul className="list-unstyled">
-          <li className="white-text large-text">
-            {valueQuality || "Qualidade"}
-          </li>
-          <li className="white-text large-text">
+          <li className="text-white">{valueQuality || "Qualidade"}</li>
+          <li className="text-white">
             {valueCustomerCare || "Atendimento ao Cliente"}
           </li>
-          <li className="white-text large-text">
-            {valueInnovation || "Inovação"}
-          </li>
+          <li className="text-white">{valueInnovation || "Inovação"}</li>
         </ul>
 
-        <Divider className="white-line" />
+        <Divider className="custom-divider" />
 
-        <Title level={3} className="white-text">
+        <Title level={3} className="about-section-title mb-3">
           {servicesOffered || "Serviços Oferecidos"}
         </Title>
-        <Text className="white-text large-text">
+        <Text>
           {servicesDescription || "Descrição dos serviços que oferecemos."}
         </Text>
       </Space>

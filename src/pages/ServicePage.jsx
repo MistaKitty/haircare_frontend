@@ -92,7 +92,7 @@ const Services = () => {
                         </div>
                       }
                     >
-                      <p className="text-black text-center">
+                      <p className="text-white text-center">
                         {service.description}
                       </p>
                     </Card>

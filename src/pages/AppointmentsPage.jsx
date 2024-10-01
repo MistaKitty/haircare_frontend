@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button, Table, Typography, Alert, Space, Spin, Modal } from "antd";
+import { Button, Typography, Alert, Space, Spin, Modal, Table } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./AppointmentsPage.css";
+import "./AppointmentsPage.css"; // Certifique-se de que está a importar o CSS
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 
@@ -17,7 +17,7 @@ const AppointmentsPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [translations, setTranslations] = useState({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   const language = Cookies.get("language") || "PT";
@@ -31,7 +31,7 @@ const AppointmentsPage = () => {
         );
         setTranslations(translationModule);
       } catch (error) {
-        console.error("Error loading translations:", error);
+        console.error("Erro ao carregar traduções:", error);
         setTranslations({});
       }
     };
@@ -62,7 +62,7 @@ const AppointmentsPage = () => {
       });
       setAppointments(response.data);
     } catch (error) {
-      console.error("Error fetching appointments:", error);
+      console.error("Erro ao carregar agendamentos:", error);
       if (error.response && error.response.status === 401) {
         setError("Erro de autenticação. Por favor, faça login novamente.");
         navigate("/login");
@@ -107,11 +107,11 @@ const AppointmentsPage = () => {
       setSuccess(
         translations[
           `${action.charAt(0).toUpperCase() + action.slice(1)}Appointment`
-        ]
+        ] || "Ação realizada com sucesso."
       );
       fetchAppointments();
     } catch (error) {
-      console.error("Error performing appointment action:", error);
+      console.error("Erro ao realizar ação no agendamento:", error);
       setError(
         translations.unexpectedError || "Erro inesperado ao realizar a ação."
       );
@@ -120,56 +120,56 @@ const AppointmentsPage = () => {
 
   const handleModalOpen = (appointment) => {
     setSelectedAppointment(appointment);
-    setIsModalVisible(true);
+    setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
     setSelectedAppointment(null);
   };
 
   const columns = [
     {
-      title: translations.date,
-      dataIndex: "appointment.date",
-      key: "date",
-      render: (date) => dayjs(date).format("DD/MM/YYYY"),
+      title: translations.date || "Data",
+      dataIndex: "date",
+      render: (text, record) =>
+        dayjs(record.appointmentDetails.date).format("DD/MM/YYYY"),
     },
     {
-      title: translations.time,
-      dataIndex: "appointment.date",
-      key: "time",
-      render: (date) => dayjs(date).format("HH:mm"),
+      title: translations.time || "Hora",
+      dataIndex: "time",
+      render: (text, record) =>
+        dayjs(record.appointmentDetails.date).format("HH:mm"),
     },
     {
-      title: translations.clientEmail,
-      dataIndex: "user.email",
-      key: "clientEmail",
+      title: translations.clientEmail || "Email do Cliente",
+      dataIndex: "clientEmail",
+      render: (text, record) => record.user.email,
     },
     {
-      title: translations.status,
-      dataIndex: "appointment.status",
-      key: "status",
+      title: translations.status || "Estado",
+      dataIndex: "status",
+      render: (text, record) => record.appointmentDetails.status,
     },
     {
-      title: translations.actions,
-      key: "actions",
-      render: (text, appointment) => (
+      title: translations.actions || "Ações",
+      dataIndex: "actions",
+      render: (text, record) => (
         <Space size="middle">
           <Button
-            onClick={() => handleAppointmentAction(appointment._id, "accept")}
-            disabled={appointment.status !== "pending"}
+            onClick={() => handleAppointmentAction(record.id, "accept")}
+            disabled={record.appointmentDetails.status !== "pending"}
           >
-            {translations.accept}
+            {translations.accept || "Aceitar"}
           </Button>
           <Button
-            onClick={() => handleAppointmentAction(appointment._id, "reject")}
-            disabled={appointment.status !== "pending"}
+            onClick={() => handleAppointmentAction(record.id, "reject")}
+            disabled={record.appointmentDetails.status !== "pending"}
           >
-            {translations.reject}
+            {translations.reject || "Rejeitar"}
           </Button>
-          <Button onClick={() => handleModalOpen(appointment)}>
-            {translations.viewDetails}
+          <Button onClick={() => handleModalOpen(record)}>
+            {translations.viewDetails || "Ver Detalhes"}
           </Button>
         </Space>
       ),
@@ -177,15 +177,15 @@ const AppointmentsPage = () => {
   ];
 
   return (
-    <div className="container">
+    <div className="container-fluid p-4">
       <Title level={2} className="text-center text-white">
-        {translations.appointments}
+        {translations.appointments || "Agendamentos"}
       </Title>
       {loading && (
         <div className="text-center">
           <Spin size="large" className="my-4" />
           <Typography.Text className="d-block italic text-white">
-            {translations.loadingAppointments}
+            {translations.loadingAppointments || "A carregar agendamentos..."}
           </Typography.Text>
         </div>
       )}
@@ -195,40 +195,60 @@ const AppointmentsPage = () => {
       {success && (
         <Alert message={success} type="success" showIcon className="mb-3" />
       )}
-      <Table dataSource={appointments} columns={columns} rowKey="_id" />
+
+      <div className="table-responsive">
+        <Table
+          columns={columns}
+          dataSource={appointments}
+          rowKey="id"
+          loading={loading}
+          pagination={{ pageSize: 5 }}
+        />
+      </div>
+
       <Modal
-        title={translations.appointmentDetails}
-        visible={isModalVisible}
+        title={translations.appointmentDetails || "Detalhes do Agendamento"}
+        open={isModalOpen}
         onCancel={handleModalClose}
         footer={null}
       >
         {selectedAppointment && (
           <div>
             <p>
-              <strong>{translations.clientEmail}: </strong>
+              <strong>
+                {translations.clientEmail || "Email do Cliente"}:{" "}
+              </strong>
               {selectedAppointment.user.email}
             </p>
             <p>
-              <strong>{translations.date}: </strong>
-              {dayjs(selectedAppointment.appointment.date).format("DD/MM/YYYY")}
+              <strong>{translations.date || "Data"}: </strong>
+              {dayjs(selectedAppointment.appointmentDetails.date).format(
+                "DD/MM/YYYY"
+              )}
             </p>
             <p>
-              <strong>{translations.time}: </strong>
-              {dayjs(selectedAppointment.appointment.date).format("HH:mm")}
+              <strong>{translations.time || "Hora"}: </strong>
+              {dayjs(selectedAppointment.appointmentDetails.date).format(
+                "HH:mm"
+              )}
             </p>
             <p>
-              <strong>{translations.status}: </strong>
-              {selectedAppointment.appointment.status}
+              <strong>{translations.status || "Estado"}: </strong>
+              {selectedAppointment.appointmentDetails.status}
             </p>
             <p>
-              <strong>{translations.services}: </strong>
-              {selectedAppointment.appointment.services
-                .map((service) => service.serviceName)
+              <strong>{translations.services || "Serviços"}: </strong>
+              {selectedAppointment.appointmentDetails.services
+                .map((service) => service.name)
                 .join(", ")}
             </p>
             <p>
-              <strong>{translations.location}: </strong>
-              {`${selectedAppointment.appointment.location.street}, ${selectedAppointment.appointment.location.locality}`}
+              <strong>{translations.location || "Localização"}: </strong>
+              {`${selectedAppointment.appointmentDetails.location.street}, ${selectedAppointment.appointmentDetails.location.locality}`}
+            </p>
+            <p>
+              <strong>{translations.billing || "Cobrança"}: </strong>
+              {selectedAppointment.appointmentDetails.billing}
             </p>
           </div>
         )}

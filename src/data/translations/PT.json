@@ -10,6 +10,7 @@
   "emailPlaceholder": "Email",
   "passwordPlaceholder": "Palavra-passe",
   "loggingIn": "A iniciar sessão... Por favor aguarde...",
+  "RegisterIn": "A registar... Por favor aguarde...",
   "noTokenReceived": "Nenhum token recebido.",
   "loginFailed": "Falha ao iniciar sessão.",
   "unexpectedError": "Erro inesperado.",
@@ -36,7 +37,7 @@
   "contactUs": "Contacte-nos",
   "whatsappGreeting": "Olá! Como posso ajudá-lo?",
   "phoneLabel": "Telefone:",
-  "emailLabel": "Email: ",
+  "emailLabel": "Email:",
   "appointmentAccepted": "Agendamento aceite com sucesso!",
   "appointmentRejected": "Agendamento rejeitado com sucesso!",
   "clientEmail": "Email do Cliente",
@@ -46,5 +47,13 @@
   "date": "Data",
   "time": "Hora",
   "appointmentDetails": "Detalhes do Agendamento",
-  "loadingAppointments": "A carregar agendamentos... Por favor aguarde..."
+  "loadingAppointments": "A carregar agendamentos... Por favor aguarde...",
+  "appointments": "Agendamentos",
+  "logoutConfirmation": "Tem certeza de que deseja sair?",
+  "sessionExpired": "A sua sessão expirou. Por favor, inicie sessão novamente.",
+  "cartEmpty": "O carrinho está vazio.",
+  "itemsInCart": "Itens no Carrinho: {count}",
+  "languageSelect": "Selecione o Idioma",
+  "viewCart": "Ver Carrinho",
+  "languageChanged": "Idioma alterado com sucesso!"
 }
