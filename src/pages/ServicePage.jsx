@@ -28,6 +28,7 @@ const Services = ({ cart, setCart }) => {
   const [form] = Form.useForm();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const fetchServices = async () => {
     try {
@@ -204,10 +205,38 @@ const Services = ({ cart, setCart }) => {
     }
   };
 
-  const handleAddToCart = (service, quantity) => {
-    const serviceWithQuantity = { ...service, quantity };
-    setCart((prevCart) => [...prevCart, serviceWithQuantity]);
-    message.success(`${service.treatments} adicionado ao carrinho!`);
+  const handleAddToCart = async (service, quantity) => {
+    const serviceWithQuantity = { serviceId: service._id, quantity };
+    const token = localStorage.getItem("token");
+
+    console.log("Dados enviados para o servidor:", serviceWithQuantity);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(serviceWithQuantity),
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erro na resposta do servidor:", errorData);
+        throw new Error(errorData.message || "Erro ao adicionar ao carrinho");
+      }
+
+      const data = await response.json();
+
+      // setCart((prevCart) => [...prevCart, ...data]);
+
+      message.success(`${service.description} adicionado ao carrinho!`);
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   if (loading) {
@@ -244,12 +273,15 @@ const Services = ({ cart, setCart }) => {
               {treatment} {expandedSections[treatment] ? "▲" : "▼"}
             </h2>
             {expandedSections[treatment] && (
-              <Row gutter={16} className="d-flex justify-content-around">
+              <Row
+                gutter={16}
+                className="d-flex flex-column align-items-center"
+              >
                 {groupedServices[treatment].map((service) => (
                   <Col span={8} key={service._id} className="mb-4">
                     <Card
                       bordered={false}
-                      className="bg-gray-800 text-white"
+                      className="bg-gray-800 text-black"
                       title={
                         <div className="ant-card-head-title d-flex justify-content-between">
                           <span className="flex-auto text-left">
@@ -267,17 +299,19 @@ const Services = ({ cart, setCart }) => {
                       <p className="text-white text-center">
                         {service.description}
                       </p>
+
                       <div className="d-flex justify-content-around align-items-center">
                         {isLoggedIn ? (
                           <>
                             <InputNumber
                               min={1}
-                              defaultValue={1}
+                              value={quantity}
+                              onChange={(value) => setQuantity(value)}
                               style={{ width: "50px", marginRight: "10px" }}
                             />
                             <Button
                               type="default"
-                              onClick={() => handleAddToCart(service, 1)}
+                              onClick={() => handleAddToCart(service, quantity)}
                             >
                               Adicionar ao Carrinho
                             </Button>
