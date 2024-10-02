@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useMediaQuery } from "react-responsive";
+
 import {
   Spin,
   Card,
-  Col,
-  Row,
   message,
   Modal,
   Form,
@@ -14,6 +14,7 @@ import {
   Switch,
   InputNumber,
   Select,
+  Collapse,
 } from "antd";
 
 const { Option } = Select;
@@ -29,6 +30,8 @@ const Services = ({ cart, setCart }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const isDesktop = useMediaQuery({ minWidth: 769 });
 
   const fetchServices = async () => {
     try {
@@ -96,13 +99,14 @@ const Services = ({ cart, setCart }) => {
   };
 
   const handleEdit = (service) => {
+    console.log("Serviço a editar:", service);
     setEditingService(service);
     form.setFieldsValue({
-      treatments: service.treatments,
-      hairLength: service.hairLength,
-      description: service.description,
-      price: service.price,
-      duration: service.duration / 60,
+      treatments: service.treatments || "",
+      hairLength: service.hairLength || "",
+      description: service.description || "",
+      price: service.price || 0,
+      duration: service.duration / 60 || 0,
     });
   };
 
@@ -255,6 +259,7 @@ const Services = ({ cart, setCart }) => {
     <div className="p-4 bg-black text-white">
       <h1 className="text-center">Nossos Serviços</h1>
       <p className="text-center">Detalhes sobre os serviços que oferecemos:</p>
+
       {isAdmin && (
         <div className="d-flex justify-content-center mb-4">
           <Button type="primary" onClick={() => setAddingService(true)}>
@@ -262,46 +267,51 @@ const Services = ({ cart, setCart }) => {
           </Button>
         </div>
       )}
-      <Row gutter={16} className="mt-4">
-        {Object.keys(groupedServices).map((treatment) => (
-          <Col span={24} key={treatment} className="mb-4">
-            <h2
-              className="d-flex flex-column align-items-center mt-4 mb-2"
-              onClick={() => toggleExpand(treatment)}
-              style={{ cursor: "pointer" }}
-            >
-              {treatment} {expandedSections[treatment] ? "▲" : "▼"}
-            </h2>
-            {expandedSections[treatment] && (
-              <Row
-                gutter={16}
-                className="d-flex flex-column align-items-center"
-              >
-                {groupedServices[treatment].map((service) => (
-                  <Col span={8} key={service._id} className="mb-4">
-                    <Card
-                      bordered={false}
-                      className="bg-gray-800 text-black"
-                      title={
-                        <div className="ant-card-head-title d-flex justify-content-between">
-                          <span className="flex-auto text-left">
-                            {service.hairLength}
-                          </span>
-                          <span className="flex-auto text-center mx-auto">
-                            {Math.floor(service.duration / 60)} min
-                          </span>
-                          <span className="flex-auto text-right">
-                            €{service.price}
-                          </span>
-                        </div>
-                      }
-                    >
-                      <p className="text-white text-center">
-                        {service.description}
-                      </p>
 
-                      <div className="d-flex justify-content-around align-items-center">
-                        {isLoggedIn ? (
+      <Collapse accordion className="mt-4 text-white">
+        {Object.keys(groupedServices).map((treatment) => (
+          <Collapse.Panel
+            header={
+              <span
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                }}
+              >
+                {treatment}
+              </span>
+            }
+            key={treatment}
+            style={{
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            {groupedServices[treatment].map((service) => (
+              <div key={service._id} className="mb-4">
+                <Card
+                  bordered={false}
+                  className="bg-gray-800 text-black"
+                  title={
+                    <div className="ant-card-head-title d-flex justify-content-between">
+                      <span className="flex-auto text-left">
+                        {service.hairLength}
+                      </span>
+                      <span className="flex-auto text-center mx-auto">
+                        {Math.floor(service.duration / 60)} min
+                      </span>
+                      <span className="flex-auto text-right">
+                        €{service.price}
+                      </span>
+                    </div>
+                  }
+                >
+                  <p className="text-center">{service.description}</p>
+
+                  <div className="d-flex justify-content-around align-items-center">
+                    {isLoggedIn ? (
+                      <>
+                        {(!isMobile || !isAdmin) && (
                           <>
                             <InputNumber
                               min={1}
@@ -316,50 +326,51 @@ const Services = ({ cart, setCart }) => {
                               Adicionar ao Carrinho
                             </Button>
                           </>
-                        ) : (
-                          <p className="text-red-500">
-                            Por favor, faça login para adicionar ao carrinho.
-                          </p>
                         )}
-                        {isAdmin && (
-                          <>
-                            <Button
-                              type="primary"
-                              onClick={() => handleEdit(service)}
-                            >
-                              Editar
-                            </Button>
-                            <Button
-                              danger
-                              onClick={() => {
-                                Modal.confirm({
-                                  title:
-                                    "Tem a certeza que deseja remover este serviço?",
-                                  onOk: () => handleRemove(service._id),
-                                });
-                              }}
-                            >
-                              Remover
-                            </Button>
-                            <Switch
-                              checked={service.isActive}
-                              onChange={() =>
-                                handleHide(service._id, service.isActive)
-                              }
-                              checkedChildren="Visível"
-                              unCheckedChildren="Escondido"
-                            />
-                          </>
-                        )}
-                      </div>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            )}
-          </Col>
+                      </>
+                    ) : (
+                      <p className="text-red-500">
+                        Por favor, faça login para adicionar ao carrinho.
+                      </p>
+                    )}
+
+                    {isAdmin && (
+                      <>
+                        <Button
+                          type="primary"
+                          onClick={() => handleEdit(service)}
+                        >
+                          Editar
+                        </Button>
+                        <Button
+                          danger
+                          onClick={() => {
+                            Modal.confirm({
+                              title:
+                                "Tem a certeza que deseja remover este serviço?",
+                              onOk: () => handleRemove(service._id),
+                            });
+                          }}
+                        >
+                          Remover
+                        </Button>
+                        <Switch
+                          checked={service.isActive}
+                          onChange={() =>
+                            handleHide(service._id, service.isActive)
+                          }
+                          checkedChildren="Visível"
+                          unCheckedChildren="Escondido"
+                        />
+                      </>
+                    )}
+                  </div>
+                </Card>
+              </div>
+            ))}
+          </Collapse.Panel>
         ))}
-      </Row>
+      </Collapse>
 
       {editingService && (
         <Modal
@@ -367,11 +378,12 @@ const Services = ({ cart, setCart }) => {
           visible={!!editingService}
           onCancel={() => setEditingService(null)}
           footer={null}
+          width={isMobile ? 300 : 800}
         >
           <Form form={form} onFinish={handleEditSubmit} layout="vertical">
             <Form.Item
               name="treatments"
-              label="Tratamentos"
+              label="Tratamento"
               rules={[{ required: true, message: "Campo obrigatório!" }]}
             >
               <Input />
@@ -385,7 +397,7 @@ const Services = ({ cart, setCart }) => {
                 <Option value="Short">Curto</Option>
                 <Option value="Medium">Médio</Option>
                 <Option value="Long">Longo</Option>
-                <Option value="Extra long">Extra Longo</Option>
+                <Option value="Extra Long">Extra Longo</Option>
               </Select>
             </Form.Item>
             <Form.Item
@@ -428,7 +440,7 @@ const Services = ({ cart, setCart }) => {
           <Form form={form} onFinish={handleAddSubmit} layout="vertical">
             <Form.Item
               name="treatments"
-              label="Tratamentos"
+              label="Tratamento"
               rules={[{ required: true, message: "Campo obrigatório!" }]}
             >
               <Input />
@@ -442,7 +454,7 @@ const Services = ({ cart, setCart }) => {
                 <Option value="Short">Curto</Option>
                 <Option value="Medium">Médio</Option>
                 <Option value="Long">Longo</Option>
-                <Option value="Extra long">Extra Longo</Option>
+                <Option value="Extra Long">Extra Longo</Option>
               </Select>
             </Form.Item>
             <Form.Item
