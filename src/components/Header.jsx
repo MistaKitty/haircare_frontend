@@ -9,7 +9,7 @@ import {
 import logo from "../assets/logo.ico";
 import CountryFlag from "react-country-flag";
 import "./Header.css";
-import countriesData from "../data/countries.json";
+import languagesData from "../data/languages.json";
 import useLanguage from "../hooks/useLanguage";
 
 const { Option } = Select;
@@ -19,7 +19,6 @@ const Header = () => {
   const isLoggedIn = Boolean(localStorage.getItem("token"));
   const [menuOpen, setMenuOpen] = useState(false);
   const [translations, setTranslations] = useState({});
-  const [countries, setCountries] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const { language, changeLanguage } = useLanguage();
@@ -39,10 +38,6 @@ const Header = () => {
 
     loadTranslations();
   }, [language]);
-
-  useEffect(() => {
-    setCountries(countriesData);
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -115,7 +110,7 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
-              {isLoggedIn && ( // Só mostra Appointments se estiver logado
+              {isLoggedIn && (
                 <li className="nav-item">
                   <Link
                     className={`nav-link ${
@@ -143,7 +138,7 @@ const Header = () => {
                 className="language-select mb-3"
                 style={{ width: 100 }}
               >
-                {countries.map(({ code }) => (
+                {languagesData.map(({ code }) => (
                   <Option key={code} value={code}>
                     <span className="country-flag">
                       <CountryFlag

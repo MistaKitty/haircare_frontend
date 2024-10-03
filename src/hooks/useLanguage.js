@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
 const useLanguage = () => {
-  const [language, setLanguage] = useState(() => {
-    return Cookies.get("language") || "pt";
-  });
+  const [language, setLanguage] = useState(
+    () => Cookies.get("language") || "pt"
+  );
 
   const changeLanguage = (lang) => {
     setLanguage(lang);
@@ -13,10 +13,10 @@ const useLanguage = () => {
 
   useEffect(() => {
     const langFromCookies = Cookies.get("language");
-    if (langFromCookies) {
+    if (langFromCookies && langFromCookies !== language) {
       setLanguage(langFromCookies);
     }
-  }, []);
+  }, [language]);
 
   return { language, changeLanguage };
 };

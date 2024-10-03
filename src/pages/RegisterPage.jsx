@@ -124,7 +124,7 @@ const RegisterPage = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder={translations.namePlaceholder || "Name"} // Adicionando placeholder
+                    placeholder={translations.namePlaceholder || "Name"}
                     required
                   />
                   <Input
@@ -133,7 +133,7 @@ const RegisterPage = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder={translations.emailPlaceholder || "Email"} // Adicionando placeholder
+                    placeholder={translations.emailPlaceholder || "Email"}
                     required
                   />
                   <Input.Password
@@ -141,7 +141,7 @@ const RegisterPage = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder={translations.passwordPlaceholder || "Password"} // Adicionando placeholder
+                    placeholder={translations.passwordPlaceholder || "Password"}
                     required
                   />
                   <div className="phone-container">
@@ -176,7 +176,7 @@ const RegisterPage = () => {
                       value={formData.phoneNumber}
                       onChange={handleInputChange}
                       placeholder={
-                        translations.phoneNumberPlaceholder || "Phone Number" // Adicionando placeholder
+                        translations.phoneNumberPlaceholder || "Phone Number"
                       }
                       required
                     />
