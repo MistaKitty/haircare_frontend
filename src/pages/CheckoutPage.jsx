@@ -17,19 +17,18 @@ const { Title, Text } = Typography;
 const CartPage = () => {
   const [cart, setCart] = useState([]);
   const [isCheckout, setIsCheckout] = useState(false);
-  const [travelCost, setTravelCost] = useState(null);
+  const [travelCost, setTravelCost] = useState("0");
   const [prefix, setPrefix] = useState(0);
   const [suffix, setSuffix] = useState(0);
   const [localidade, setLocalidade] = useState("");
   const [concelho, setConcelho] = useState("");
   const [freguesia, setFreguesia] = useState("");
   const [morada, setMorada] = useState("");
-
-  const [number, setNumber] = useState("");
   const [floor, setFloor] = useState("");
+  const [street, setStreet] = useState("");
   const [description, setDescription] = useState("");
   const [showDetails, setShowDetails] = useState(false);
-
+  const [showSummary, setShowSummary] = useState(false);
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -60,6 +59,15 @@ const CartPage = () => {
       .toFixed(2);
     return total;
   };
+  const totalFinal = (() => {
+    const parsedTravelCost = travelCost
+      ? parseFloat(travelCost.replace("€", "").trim()) || 0
+      : 0;
+
+    const calculatedTotal = parseFloat(calculateTotal()) || 0;
+
+    return (calculatedTotal + parsedTravelCost).toFixed(2);
+  })();
 
   const handleQuantityChange = async (value, index) => {
     const newCart = [...cart];
@@ -117,22 +125,20 @@ const CartPage = () => {
         }
       );
 
-      // Log para verificar a resposta recebida
       console.log("Resposta da API de localidade:", response.data);
 
-      // Assegure-se que a resposta contém os campos esperados
       if (response.data && response.data.location) {
         const { location, fee } = response.data;
 
         const { street, locality, parish, county, coordinates } = location;
 
-        // Preencher os estados com os dados recebidos da API
         setMorada(street || "");
         setLocalidade(locality || "");
         setFreguesia(parish || "");
         setConcelho(county || "");
-        setTravelCost(fee); // Define a taxa de deslocação
-        setShowDetails(true); // Exibe os detalhes após a resposta
+        setStreet(street || "");
+        setTravelCost(fee);
+        setShowDetails(true);
       } else {
         console.error("Resposta da API não contém os dados esperados.");
       }
@@ -151,6 +157,10 @@ const CartPage = () => {
     } else {
       console.error("Prefixo e sufixo devem ser fornecidos.");
     }
+  };
+
+  const handleProceedToSummary = () => {
+    setShowSummary(true); // Exibe o resumo
   };
 
   return (
@@ -175,6 +185,7 @@ const CartPage = () => {
               onChange={(value) => setSuffix(value)}
               style={{ width: "60px", margin: "10px" }}
             />
+            <Divider />
           </div>
           <Divider />
           <Button type="primary" onClick={handleFetchLocalidade}>
@@ -193,6 +204,19 @@ const CartPage = () => {
                   <Input
                     value={morada}
                     onChange={(e) => setMorada(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Rua:
+                  </Text>
+                  <Input
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
                     style={{ width: "120px", marginLeft: "10px" }}
                   />
                 </List.Item>
@@ -235,68 +259,103 @@ const CartPage = () => {
                     style={{ width: "120px", marginLeft: "10px" }}
                   />
                 </List.Item>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Porta:
+                  </Text>
+                  <Input
+                    value={floor}
+                    onChange={(e) => setFloor(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Andar:
+                  </Text>
+                  <Input
+                    value={floor}
+                    onChange={(e) => setFloor(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Descrição:
+                  </Text>
+                  <Input.TextArea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
               </List>
             </Card>
           )}
-          {travelCost && (
-            <div>
+          <Divider />
+          <Button
+            type="primary"
+            onClick={handleProceedToSummary}
+            style={{ marginTop: "20px" }}
+          >
+            Seguir
+          </Button>
+          {showSummary && (
+            <Card bordered style={{ padding: "10px", marginTop: "20px" }}>
+              <Text strong>Taxa de Deslocação: {travelCost} €</Text>
+              <br />
+              <Text strong>Total: {totalFinal} €</Text>
               <Divider />
-              <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
-                Valor da Taxa de Deslocação: {travelCost}
-              </Text>
-            </div>
+              <Button type="primary" onClick={handleCheckout}>
+                Confirmar Compra
+              </Button>
+            </Card>
           )}
         </Card>
       ) : (
-        <>
-          {cart.length > 0 ? (
-            <Card
-              title="Carrinho"
-              bordered
-              style={{ width: "400px", margin: "0 auto" }}
-            >
-              {cart.map((item, index) => (
-                <Card
-                  key={item.serviceId._id}
-                  style={{
-                    marginBottom: "10px",
-                    backgroundColor: "white",
-                    pointerEvents: index === 0 ? "none" : "auto",
-                  }}
-                >
-                  <Title level={5}>{item.serviceId.name}</Title>
-                  <Text>
-                    Preço: €{item.serviceId.price} x {item.quantity}
-                  </Text>
-                  <div style={{ marginTop: "10px" }}>
-                    <InputNumber
-                      min={1}
-                      value={item.quantity}
-                      onChange={(value) => handleQuantityChange(value, index)}
-                    />
-                    <Button
-                      icon={<DeleteOutlined />}
-                      onClick={() => handleRemoveItem(index)}
-                      style={{
-                        marginLeft: "10px",
-                        backgroundColor: "red",
-                        color: "white",
-                      }}
-                    />
-                  </div>
-                </Card>
-              ))}
-              <Divider />
-              <Text>Total: €{calculateTotal()}</Text>
-              <Divider />
-              <Button type="primary" onClick={handleCheckout}>
-                Finalizar Compra
-              </Button>
-            </Card>
-          ) : (
-            <Text>O carrinho está vazio.</Text>
-          )}
-        </>
+        <Card bordered style={{ width: "400px", margin: "0 auto" }}>
+          <Title level={3}>Resumo do Carrinho</Title>
+          <List
+            dataSource={cart}
+            renderItem={(item, index) => (
+              <List.Item
+                actions={[
+                  <Button
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleRemoveItem(index)}
+                  >
+                    Remover
+                  </Button>,
+                ]}
+              >
+                <List.Item.Meta
+                  title={item.serviceId.name}
+                  description={`Preço: ${item.serviceId.price} €`}
+                />
+                <InputNumber
+                  min={1}
+                  defaultValue={item.quantity}
+                  onChange={(value) => handleQuantityChange(value, index)}
+                />
+              </List.Item>
+            )}
+          />
+          <Divider />
+          <Text strong>Total: {totalFinal} €</Text>
+          <Divider />
+          <Button type="primary" onClick={() => setIsCheckout(true)}>
+            Prosseguir para Checkout
+          </Button>
+        </Card>
       )}
     </div>
   );
