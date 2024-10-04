@@ -22,7 +22,7 @@ const Header = () => {
   const [translations, setTranslations] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [totalItemsInCart, setTotalItemsInCart] = useState(0);
-  const pollingInterval = 500;
+  const pollingInterval = 50000;
 
   const { language, changeLanguage } = useLanguage();
 
