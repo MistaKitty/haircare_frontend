@@ -10,6 +10,7 @@ import {
   Input,
 } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const { Title, Text } = Typography;
 
@@ -21,6 +22,13 @@ const CartPage = () => {
   const [suffix, setSuffix] = useState(0);
   const [localidade, setLocalidade] = useState("");
   const [concelho, setConcelho] = useState("");
+  const [freguesia, setFreguesia] = useState("");
+  const [morada, setMorada] = useState("");
+
+  const [number, setNumber] = useState("");
+  const [floor, setFloor] = useState("");
+  const [description, setDescription] = useState("");
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -100,7 +108,7 @@ const CartPage = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL_REMOTE}/api/cart/localidade`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/cart/localidade`,
         { postalCodePrefix: prefix, postalCodeSuffix: suffix },
         {
           headers: {
@@ -108,61 +116,133 @@ const CartPage = () => {
           },
         }
       );
-      setLocalidade(response.data.local);
-      setConcelho(response.data.concelho);
+
+      // Log para verificar a resposta recebida
+      console.log("Resposta da API de localidade:", response.data);
+
+      // Assegure-se que a resposta contém os campos esperados
+      if (response.data && response.data.location) {
+        const { location, fee } = response.data;
+
+        const { street, locality, parish, county, coordinates } = location;
+
+        // Preencher os estados com os dados recebidos da API
+        setMorada(street || "");
+        setLocalidade(locality || "");
+        setFreguesia(parish || "");
+        setConcelho(county || "");
+        setTravelCost(fee); // Define a taxa de deslocação
+        setShowDetails(true); // Exibe os detalhes após a resposta
+      } else {
+        console.error("Resposta da API não contém os dados esperados.");
+      }
     } catch (error) {
       console.error("Erro ao obter a localidade:", error);
+      setMorada("");
       setLocalidade("");
+      setFreguesia("");
       setConcelho("");
     }
   };
 
-  const calculateTaxes = async () => {
-    const total = parseFloat(calculateTotal());
-    const tax = (total + prefix + suffix) * 0.1;
-    setTravelCost(tax.toFixed(2));
-
-    await fetchLocalidade(prefix, suffix);
+  const handleFetchLocalidade = () => {
+    if (prefix && suffix) {
+      fetchLocalidade(prefix, suffix);
+    } else {
+      console.error("Prefixo e sufixo devem ser fornecidos.");
+    }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <Title level={1} style={{ textAlign: "center" }}>
-        Carrinho
-      </Title>
+    <div style={{ padding: "20px", textAlign: "center" }}>
+      <Title level={1}>Carrinho</Title>
       {isCheckout ? (
         <Card
-          title="Calcular Taxas"
+          title={<Title level={3}>Calcular Taxas</Title>}
           bordered
           style={{ width: "400px", margin: "0 auto" }}
         >
-          <Text style={{ fontSize: "16px" }}>Prefixo:</Text>
-          <InputNumber
-            value={prefix}
-            onChange={setPrefix}
-            style={{ width: "100px", marginRight: "10px" }}
-          />
-          <Text style={{ fontSize: "16px" }}>Sufixo:</Text>
-          <InputNumber
-            value={suffix}
-            onChange={setSuffix}
-            style={{ width: "100px", marginRight: "10px" }}
-          />
-          <Divider />
-          <Text style={{ fontSize: "16px" }}>Localidade:</Text>
-          <Input value={localidade} disabled style={{ marginBottom: "10px" }} />
-          <Text style={{ fontSize: "16px" }}>Concelho:</Text>
-          <Input value={concelho} disabled style={{ marginBottom: "10px" }} />
-          <div style={{ textAlign: "center", marginTop: "10px" }}>
-            <Button type="primary" onClick={calculateTaxes}>
-              Calcular Taxas
-            </Button>
+          <div>
+            <Text style={{ fontSize: "16px" }}>Prefixo:</Text>
+            <InputNumber
+              value={prefix}
+              onChange={(value) => setPrefix(value)}
+              style={{ width: "60px", margin: "10px" }}
+            />
+            <Text style={{ fontSize: "16px" }}>Sufixo:</Text>
+            <InputNumber
+              value={suffix}
+              onChange={(value) => setSuffix(value)}
+              style={{ width: "60px", margin: "10px" }}
+            />
           </div>
+          <Divider />
+          <Button type="primary" onClick={handleFetchLocalidade}>
+            Calcular Taxas
+          </Button>
+          {showDetails && (
+            <Card bordered style={{ padding: "10px", marginTop: "20px" }}>
+              <List>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Morada:
+                  </Text>
+                  <Input
+                    value={morada}
+                    onChange={(e) => setMorada(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Localidade:
+                  </Text>
+                  <Input
+                    value={localidade}
+                    onChange={(e) => setLocalidade(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Concelho:
+                  </Text>
+                  <Input
+                    value={concelho}
+                    onChange={(e) => setConcelho(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
+                <List.Item>
+                  <Text
+                    strong
+                    style={{ width: "120px", display: "inline-block" }}
+                  >
+                    Freguesia:
+                  </Text>
+                  <Input
+                    value={freguesia}
+                    onChange={(e) => setFreguesia(e.target.value)}
+                    style={{ width: "120px", marginLeft: "10px" }}
+                  />
+                </List.Item>
+              </List>
+            </Card>
+          )}
           {travelCost && (
             <div>
               <Divider />
               <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
-                Valor da Taxa de Deslocação: €{travelCost}
+                Valor da Taxa de Deslocação: {travelCost}
               </Text>
             </div>
           )}
@@ -175,49 +255,46 @@ const CartPage = () => {
               bordered
               style={{ width: "400px", margin: "0 auto" }}
             >
-              <List
-                itemLayout="horizontal"
-                dataSource={cart}
-                renderItem={(item, index) => (
-                  <List.Item
-                    actions={[
-                      <Button
-                        type="link"
-                        onClick={() => handleRemoveItem(index)}
-                        icon={<DeleteOutlined />}
-                      >
-                        Remover
-                      </Button>,
-                    ]}
-                  >
-                    <List.Item.Meta
-                      title={item.serviceId.name}
-                      description={`Preço: €${item.serviceId.price} | Quantidade: `}
-                    />
+              {cart.map((item, index) => (
+                <Card
+                  key={item.serviceId._id}
+                  style={{
+                    marginBottom: "10px",
+                    backgroundColor: "white",
+                    pointerEvents: index === 0 ? "none" : "auto",
+                  }}
+                >
+                  <Title level={5}>{item.serviceId.name}</Title>
+                  <Text>
+                    Preço: €{item.serviceId.price} x {item.quantity}
+                  </Text>
+                  <div style={{ marginTop: "10px" }}>
                     <InputNumber
                       min={1}
-                      defaultValue={item.quantity}
+                      value={item.quantity}
                       onChange={(value) => handleQuantityChange(value, index)}
-                      style={{ width: "70px" }}
                     />
-                  </List.Item>
-                )}
-              />
+                    <Button
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleRemoveItem(index)}
+                      style={{
+                        marginLeft: "10px",
+                        backgroundColor: "red",
+                        color: "white",
+                      }}
+                    />
+                  </div>
+                </Card>
+              ))}
               <Divider />
-              <Text style={{ fontSize: "20px", fontWeight: "bold" }}>
-                Total: €{calculateTotal()}
-              </Text>
+              <Text>Total: €{calculateTotal()}</Text>
               <Divider />
-              <div style={{ textAlign: "center", marginTop: "10px" }}>
-                <Button type="primary" onClick={handleCheckout}>
-                  Checkout
-                </Button>
-              </div>
+              <Button type="primary" onClick={handleCheckout}>
+                Finalizar Compra
+              </Button>
             </Card>
           ) : (
-            <Text style={{ textAlign: "center" }}>
-              O seu carrinho está vazio.
-            </Text>
+            <Text>O carrinho está vazio.</Text>
           )}
         </>
       )}
