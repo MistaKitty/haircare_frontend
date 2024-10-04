@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Typography, Alert, Space, Spin, Modal, Table } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./AppointmentsPage.css"; // Certifique-se de que está a importar o CSS
+import "./AppointmentsPage.css";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 

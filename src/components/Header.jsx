@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Button, Select } from "antd";
+import { Button, Select, Badge } from "antd";
 import {
   LoginOutlined,
   ShoppingCartOutlined,
@@ -11,6 +11,7 @@ import CountryFlag from "react-country-flag";
 import "./Header.css";
 import languagesData from "../data/languages.json";
 import useLanguage from "../hooks/useLanguage";
+import axios from "axios";
 
 const { Option } = Select;
 
@@ -20,6 +21,8 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [translations, setTranslations] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [totalItemsInCart, setTotalItemsInCart] = useState(0);
+  const pollingInterval = 500;
 
   const { language, changeLanguage } = useLanguage();
 
@@ -38,6 +41,39 @@ const Header = () => {
 
     loadTranslations();
   }, [language]);
+
+  const fetchCartItems = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL_REMOTE}/api/cart`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const total = response.data.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+
+      setTotalItemsInCart(total);
+    } catch (error) {
+      console.error("Erro ao obter os itens do carrinho:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchCartItems(); // Carregar os itens do carrinho ao montar o componente
+      const intervalId = setInterval(fetchCartItems, pollingInterval); // Iniciar o polling
+      return () => clearInterval(intervalId); // Limpar o intervalo ao desmontar
+    } else {
+      setTotalItemsInCart(0);
+    }
+  }, [isLoggedIn]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -163,14 +199,21 @@ const Header = () => {
               >
                 {isLoggedIn ? (
                   <>
-                    <Button
-                      type="default"
-                      icon={<ShoppingCartOutlined />}
-                      className="btn-outline-light me-2"
-                      style={{ minWidth: "100px" }}
-                    >
-                      {translations.cart || "Cart"}
-                    </Button>
+                    <Link to="/checkout" className="d-flex align-items-center">
+                      <Badge
+                        count={totalItemsInCart}
+                        style={{ marginRight: 8 }}
+                      >
+                        <Button
+                          type="default"
+                          icon={<ShoppingCartOutlined />}
+                          className="btn-outline-light"
+                          style={{ minWidth: "100px" }}
+                        >
+                          {translations.cart || "Cart"}
+                        </Button>
+                      </Badge>
+                    </Link>
                     <Button
                       type="default"
                       icon={<LogoutOutlined />}

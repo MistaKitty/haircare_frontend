@@ -55,5 +55,20 @@
   "itemsInCart": "Itens no Carrinho: {count}",
   "languageSelect": "Selecione o Idioma",
   "viewCart": "Ver Carrinho",
-  "languageChanged": "Idioma alterado com sucesso!"
+  "languageChanged": "Idioma alterado com sucesso!",
+  "ourServices": "Nossos Serviços",
+  "serviceDetails": "Detalhes sobre os serviços que oferecemos:",
+  "addService": "Adicionar Serviço",
+  "visible": "Visível",
+  "hidden": "Escondido",
+  "pleaseLogin": "Por favor, faça login para adicionar ao carrinho.",
+  "confirmRemoveService": "Tem a certeza que deseja remover este serviço?",
+  "updateService": "Atualizar Serviço",
+  "treatment": "Tratamento",
+  "hairLength": "Comprimento do Cabelo",
+  "description": "Descrição",
+  "price": "Preço (€)",
+  "duration": "Duração (min)",
+  "requiredField": "Campo obrigatório!",
+  "addToCart": "Adicionar ao Carrinho"
 }

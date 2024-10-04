@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useMediaQuery } from "react-responsive";
-import useLanguage from "../hooks/useLanguage";
+
 import {
   Spin,
   Card,
@@ -32,24 +32,6 @@ const Services = ({ cart, setCart }) => {
   const [quantity, setQuantity] = useState(1);
   const isMobile = useMediaQuery({ maxWidth: 768 });
   const isDesktop = useMediaQuery({ minWidth: 769 });
-  const { language } = useLanguage();
-  const [translations, setTranslations] = useState({});
-
-  useEffect(() => {
-    const loadTranslations = async () => {
-      try {
-        const translationModule = await import(
-          `../data/translations/${language}.json`
-        );
-        setTranslations(translationModule.default);
-      } catch (err) {
-        console.error("Error loading translations:", err);
-        setTranslations({});
-      }
-    };
-
-    loadTranslations();
-  }, [language]);
 
   const fetchServices = async () => {
     try {
@@ -276,9 +258,7 @@ const Services = ({ cart, setCart }) => {
 
   return (
     <div className="p-4 bg-black text-white">
-      <h1 className="text-center">
-        {translations.ourServices || "Nossos Serviços"}
-      </h1>
+      <h1 className="text-center">Nossos Serviços</h1>
       <p className="text-center">Detalhes sobre os serviços que oferecemos:</p>
 
       {isAdmin && (

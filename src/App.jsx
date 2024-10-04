@@ -14,6 +14,7 @@ import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
 import About from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 const isAuthenticated = () => {
   return Boolean(localStorage.getItem("token"));
@@ -37,6 +38,10 @@ const App = () => {
           <Route
             path="/appointments"
             element={<PrivateRoute element={<Appointments />} />}
+          />
+          <Route
+            path="/checkout"
+            element={<PrivateRoute element={<CheckoutPage />} />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
