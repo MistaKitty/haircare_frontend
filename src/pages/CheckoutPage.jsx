@@ -181,37 +181,29 @@ const CartPage = () => {
       }, {});
 
       const services = Object.keys(serviceCounts);
-      console.log("Services Array:", services);
-
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.id;
-      console.log(userId);
-
-      const location = {
-        postalCodePrefix: String(prefix),
-        postalCodeSuffix: String(suffix),
-        number: porta,
-        floor: andar,
-      };
 
       const checkoutData = {
-        location: location,
+        location: {
+          postalCodePrefix: String(prefix),
+          postalCodeSuffix: String(suffix),
+          number: porta,
+          floor: andar,
+        },
         description,
         user: userId,
         date: selectedDate ? selectedDate.toISOString() : null,
-        services: services, // Agora é um array
+        services: services,
       };
 
-      console.log("Checkout Data:", checkoutData); // Para verificar a saída
-
-      // Chamada à API
       const response = await fetch(
         `${import.meta.env.VITE_API_URL_REMOTE}/api/appointment`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Se necessário
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(checkoutData),
         }
@@ -221,8 +213,21 @@ const CartPage = () => {
         throw new Error("Erro ao processar checkout");
       }
 
-      const data = await response.json();
-      console.log("Resposta da API:", data); // Mostra a resposta da API
+      const deleteCartResponse = await fetch(
+        `${import.meta.env.VITE_API_URL_REMOTE}/api/cart`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!deleteCartResponse.ok) {
+        throw new Error("Erro ao remover itens do carrinho");
+      }
+
+      window.location.href = "/";
     } catch (error) {
       console.error("Erro ao processar checkout:", error);
     }

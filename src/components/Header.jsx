@@ -22,7 +22,7 @@ const Header = () => {
   const [translations, setTranslations] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [totalItemsInCart, setTotalItemsInCart] = useState(0);
-  const pollingInterval = 50000;
+  const pollingInterval = 500;
 
   const { language, changeLanguage } = useLanguage();
 
@@ -67,10 +67,9 @@ const Header = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetchCartItems(); // Carregar os itens do carrinho ao montar o componente
-      const intervalId = setInterval(fetchCartItems, pollingInterval); // Iniciar o polling
-      return () => clearInterval(intervalId); // Limpar o intervalo ao desmontar
-    } else {
+      fetchCartItems();
+      const intervalId = setInterval(fetchCartItems, pollingInterval);
+      return () => clearInterval(intervalId);
       setTotalItemsInCart(0);
     }
   }, [isLoggedIn]);
