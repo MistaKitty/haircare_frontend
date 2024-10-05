@@ -8,9 +8,12 @@ import {
   InputNumber,
   Button,
   Input,
+  DatePicker,
+  TimePicker,
 } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { jwtDecode } from "jwt-decode";
 
 const { Title, Text } = Typography;
 
@@ -29,6 +32,14 @@ const CartPage = () => {
   const [description, setDescription] = useState("");
   const [showDetails, setShowDetails] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [showProceedButton, setShowProceedButton] = useState(false);
+  const [showCalculateButton, setShowCalculateButton] = useState(true);
+  const [porta, setPorta] = useState("");
+  const [andar, setAndar] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -116,7 +127,7 @@ const CartPage = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart/localidade`,
+        `${import.meta.env.VITE_API_URL_REMOTE}/api/cart/localidade`,
         { postalCodePrefix: prefix, postalCodeSuffix: suffix },
         {
           headers: {
@@ -131,7 +142,8 @@ const CartPage = () => {
         const { location, fee } = response.data;
 
         const { street, locality, parish, county, coordinates } = location;
-
+        setShowSummary(true);
+        setShowProceedButton(true);
         setMorada(street || "");
         setLocalidade(locality || "");
         setFreguesia(parish || "");
@@ -151,6 +163,71 @@ const CartPage = () => {
     }
   };
 
+  const finishCheckout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+
+      const serviceCounts = cart.reduce((acc, item) => {
+        const id = item.serviceId._id;
+        if (acc[id]) {
+          acc[id] += item.quantity;
+        } else {
+          acc[id] = item.quantity;
+        }
+        return acc;
+      }, {});
+
+      const services = Object.keys(serviceCounts);
+      console.log("Services Array:", services);
+
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+      console.log(userId);
+
+      const location = {
+        postalCodePrefix: String(prefix),
+        postalCodeSuffix: String(suffix),
+        number: porta,
+        floor: andar,
+      };
+
+      const checkoutData = {
+        location: location,
+        description,
+        user: userId,
+        date: selectedDate ? selectedDate.toISOString() : null,
+        services: services, // Agora é um array
+      };
+
+      console.log("Checkout Data:", checkoutData); // Para verificar a saída
+
+      // Chamada à API
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL_REMOTE}/api/appointment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Se necessário
+          },
+          body: JSON.stringify(checkoutData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao processar checkout");
+      }
+
+      const data = await response.json();
+      console.log("Resposta da API:", data); // Mostra a resposta da API
+    } catch (error) {
+      console.error("Erro ao processar checkout:", error);
+    }
+  };
+
   const handleFetchLocalidade = () => {
     if (prefix && suffix) {
       fetchLocalidade(prefix, suffix);
@@ -159,8 +236,11 @@ const CartPage = () => {
     }
   };
 
-  const handleProceedToSummary = () => {
-    setShowSummary(true); // Exibe o resumo
+  const handleProceedToBuy = () => {
+    setShowSummary(true);
+    setShowCalendar(true);
+    setIsCheckout(false);
+    setShowCalculateButton(false);
   };
 
   return (
@@ -168,7 +248,7 @@ const CartPage = () => {
       <Title level={1}>Carrinho</Title>
       {isCheckout ? (
         <Card
-          title={<Title level={3}>Calcular Taxas</Title>}
+          title={<Title level={3}>Compra</Title>}
           bordered
           style={{ width: "400px", margin: "0 auto" }}
         >
@@ -188,9 +268,15 @@ const CartPage = () => {
             <Divider />
           </div>
           <Divider />
-          <Button type="primary" onClick={handleFetchLocalidade}>
+
+          <Button
+            type="primary"
+            onClick={handleFetchLocalidade}
+            style={{ display: showCalculateButton ? "block" : "none" }}
+          >
             Calcular Taxas
           </Button>
+
           {showDetails && (
             <Card bordered style={{ padding: "10px", marginTop: "20px" }}>
               <List>
@@ -267,8 +353,8 @@ const CartPage = () => {
                     Porta:
                   </Text>
                   <Input
-                    value={floor}
-                    onChange={(e) => setFloor(e.target.value)}
+                    value={porta}
+                    onChange={(e) => setPorta(e.target.value)}
                     style={{ width: "120px", marginLeft: "10px" }}
                   />
                 </List.Item>
@@ -280,8 +366,8 @@ const CartPage = () => {
                     Andar:
                   </Text>
                   <Input
-                    value={floor}
-                    onChange={(e) => setFloor(e.target.value)}
+                    value={andar}
+                    onChange={(e) => setAndar(e.target.value)}
                     style={{ width: "120px", marginLeft: "10px" }}
                   />
                 </List.Item>
@@ -302,23 +388,60 @@ const CartPage = () => {
             </Card>
           )}
           <Divider />
-          <Button
-            type="primary"
-            onClick={handleProceedToSummary}
-            style={{ marginTop: "20px" }}
-          >
-            Seguir
-          </Button>
+
           {showSummary && (
             <Card bordered style={{ padding: "10px", marginTop: "20px" }}>
               <Text strong>Taxa de Deslocação: {travelCost} €</Text>
               <br />
               <Text strong>Total: {totalFinal} €</Text>
               <Divider />
-              <Button type="primary" onClick={handleCheckout}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setShowCalendar(true);
+                  setShowSummary(false);
+                  setShowDetails(false);
+                  setShowCalculateButton(false);
+                  setisCheckout(false);
+                }}
+              >
                 Confirmar Compra
               </Button>
             </Card>
+          )}
+          {showCalendar && (
+            <div style={{ marginTop: "20px" }}>
+              <DatePicker
+                style={{ width: "100%" }}
+                disabledDate={(current) => {
+                  return (
+                    current && (current.day() === 0 || current.day() === 6)
+                  );
+                }}
+                onChange={(date) => setSelectedDate(date)}
+              />
+              <TimePicker
+                style={{ width: "100%", marginTop: "20px" }}
+                format="HH:mm"
+                minuteStep={15}
+                disabledHours={() => {
+                  const hours = [];
+                  for (let i = 0; i < 9; i++) {
+                    hours.push(i);
+                  }
+                  for (let i = 19; i < 24; i++) {
+                    hours.push(i);
+                  }
+                  return hours;
+                }}
+                onChange={(time) => setSelectedTime(time)}
+              />
+              <br />
+              <br />
+              <Button type="primary" onClick={finishCheckout}>
+                Agendar!
+              </Button>
+            </div>
           )}
         </Card>
       ) : (
@@ -352,7 +475,7 @@ const CartPage = () => {
           <Divider />
           <Text strong>Total: {totalFinal} €</Text>
           <Divider />
-          <Button type="primary" onClick={() => setIsCheckout(true)}>
+          <Button type="primary" onClick={handleCheckout}>
             Prosseguir para Checkout
           </Button>
         </Card>
